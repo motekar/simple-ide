@@ -473,7 +473,7 @@ if (!class_exists('wpide')) :
 
       //set backup filename
       $backup_path = 'backups' . preg_replace("#\.php$#i", "_" . date("Y-m-d-H") . ".php", $_POST['filename']);
-      $backup_path_full = plugin_dir_path(__FILE__) . $backup_path;
+      $backup_path_full = WP_CONTENT_DIR . '/' . $backup_path;
       //create backup directory if not there
       $new_file_info = pathinfo($backup_path_full);
       if (!$wp_filesystem->is_dir($new_file_info['dirname'])) wp_mkdir_p($new_file_info['dirname']); //should use the filesytem api here but there isn't a comparable command right now
@@ -1032,7 +1032,7 @@ if (!class_exists('wpide')) :
 
       //set backup filename
       $backup_path = 'backups' . preg_replace("#\.php$#i", "_" . date("Y-m-d-H") . ".php", $_POST['filename']);
-      $backup_path = plugin_dir_path(__FILE__) . $backup_path;
+      $backup_path = WP_CONTENT_DIR . '/' . $backup_path;
 
       //create backup directory if not there
       $new_file_info = pathinfo($backup_path);
