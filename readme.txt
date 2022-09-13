@@ -1,10 +1,10 @@
 === WPide ===
-Contributors: XplodedThemes
-Tags: theme editor, plugin editor, code editor, file editor, file manager, wpide, ide
-Requires at least: 5.0
-Tested up to: 5.9
-Stable tag: 2.6
-Requires PHP: 5.2
+Contributors: motekar
+Tags: theme editor, plugin editor, code editor, file editor, file manager, wpide, ide, classicpress
+Stable tag: 2.7
+Requires PHP: 5.5
+Requires at least: 4.9
+Tested up to: 6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,9 +83,12 @@ Either the image contains no image data (its a new empty file) or the image is n
 
 == Changelog ==
 
+= 2.7 =
+* Compatible with ClassicPress
+
 = 2.6 =
 * 2022-04-26
-* Plugin acquired by XplodedThemes 
+* Plugin acquired by XplodedThemes
 * A brand new and completely revamped version of WPide is coming soon, Stay tuned!
 
 = 2.5 =

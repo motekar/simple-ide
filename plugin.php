@@ -3,10 +3,12 @@
   Plugin Name: Classic WPide
   Plugin URI: https://github.com/motekar/classic-wpide
   Description: WordPress code editor with auto-completion of both WordPress and PHP functions with reference, syntax highlighting, line numbers, tabbed editing, automatic backup.
-  Version: 1.0
+  Version: 2.7
+  Author: Motekar
+  Author URI: https://www.motekar.com
+  Requires PHP: 5.5
   Requires at least: 4.9
-  Requires PHP: 5.2
-  Tested up to: 5.7
+  Tested up to: 6.0
   Text Domain: classic-wpide
 
   This program is free software; you can redistribute it and/or modify
@@ -144,7 +146,6 @@ if (!class_exists('wpide')) :
         'plugin_action_links_' . plugin_basename(__FILE__),
         array($this, 'plugin_action_links')
       );
-      add_filter('admin_footer_text', array($this, 'admin_footer_text'));
     }
 
 
@@ -157,19 +158,6 @@ if (!class_exists('wpide')) :
 
       return $links;
     } // plugin_action_links
-
-
-    // additional powered by text in admin footer; only on WPide page
-    function admin_footer_text($text)
-    {
-      if (!$this->is_plugin_page()) {
-        return $text;
-      }
-
-      $text = '<i><a href="https://wpide.com/" title="Visit WPide\'s site for more info" target="_blank">WPide</a> v' . $this->version . ' by <a href="https://www.xplodedthemes.com/" title="Visit our site to get more great plugins" target="_blank">XplodedThemes</a>. Please <a target="_blank" href="https://wordpress.org/support/plugin/wpide/reviews/#new-post" title="Rate the plugin">rate the plugin <span>★★★★★</span></a> to help us spread the word. Thank you!</i>';
-
-      return $text;
-    } // admin_footer_text
 
 
     public function hide_wp_sidebar_nav($classes)
@@ -450,7 +438,7 @@ if (!class_exists('wpide')) :
 
         try {
           $stmts = $parser->parse($code);
-        } catch (PHPParser_Error $e) {
+        } catch (\PhpParser\Error $e) {
           echo 'Parse Error: ', $e->getMessage();
           die();
         }
@@ -481,7 +469,7 @@ if (!class_exists('wpide')) :
       if ($is_php) {
         //create the backup file adding some php to the file to enable direct restore
         global $current_user;
-        get_currentuserinfo();
+        wp_get_current_user();
         $user_md5 = md5(serialize($current_user));
 
         $restore_php = '<?php /* start WPide restore code */
@@ -506,7 +494,7 @@ if (!class_exists('wpide')) :
 
         //lets create an extra long nonce to make it less crackable
         global $current_user;
-        get_currentuserinfo();
+        wp_get_current_user();
         $user_md5 = md5(serialize($current_user));
 
         $result = "\"" . $backup_path . ":::" . $user_md5 . "\"";
@@ -1063,11 +1051,7 @@ if (!class_exists('wpide')) :
       echo "___________________ \n\n";
 
       // WordPress version
-      if ($wp_version > 5) {
-        echo "WordPress version = " . $wp_version . "\n\n";
-      } else {
-        echo "WordPress version = " . $wp_version . " (which is too old to run WPide) \n\n";
-      }
+      echo "WordPress version = " . $wp_version . "\n\n";
 
       //check the user has the permissions
       check_admin_referer('plugin-name-action_wpidenonce');
