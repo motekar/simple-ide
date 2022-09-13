@@ -1298,9 +1298,9 @@ if (!class_exists('wpide')) :
         });
       </script>
 
-      <div id="poststuff" class="metabox-holder has-right-sidebar">
+      <div id="wpide-wrap">
 
-        <div id="side-info-column" class="inner-sidebar">
+        <div id="wpide-sidebar">
 
           <div id="wpide_info">
             <div id="wpide_info_content"></div>
@@ -1319,23 +1319,21 @@ if (!class_exists('wpide')) :
 
           <div id="submitdiv" class="postbox ">
             <h3 class="hndle"><span>Files</span></h3>
-            <div class="inside">
-              <div class="submitbox" id="submitpost">
-                <div id="minor-publishing">
+            <div class="submitbox" id="submitpost">
+              <div id="minor-publishing">
+              </div>
+              <div id="major-publishing-actions">
+                <div id="wpide_file_browser"></div>
+                <br style="clear:both;" />
+                <div class="new_file new_item_inputs">
+                  <label for="new_folder">File name</label><input class="has_data" name="new_file" type="text" rel="" value="" placeholder="Filename.ext" />
+                  <a href="#" id="wpide_create_new_file" class="button-primary">CREATE</a>
                 </div>
-                <div id="major-publishing-actions">
-                  <div id="wpide_file_browser"></div>
-                  <br style="clear:both;" />
-                  <div class="new_file new_item_inputs">
-                    <label for="new_folder">File name</label><input class="has_data" name="new_file" type="text" rel="" value="" placeholder="Filename.ext" />
-                    <a href="#" id="wpide_create_new_file" class="button-primary">CREATE</a>
-                  </div>
-                  <div class="new_directory new_item_inputs">
-                    <label for="new_directory">Directory name</label><input class="has_data" name="new_directory" type="text" rel="" value="" placeholder="Filename.ext" />
-                    <a href="#" id="wpide_create_new_directory" class="button-primary">CREATE</a>
-                  </div>
-                  <div class="clear"></div>
+                <div class="new_directory new_item_inputs">
+                  <label for="new_directory">Directory name</label><input class="has_data" name="new_directory" type="text" rel="" value="" placeholder="Filename.ext" />
+                  <a href="#" id="wpide_create_new_directory" class="button-primary">CREATE</a>
                 </div>
+                <div class="clear"></div>
               </div>
             </div>
           </div>
@@ -1343,7 +1341,7 @@ if (!class_exists('wpide')) :
 
         </div>
 
-        <div id="post-body">
+        <div id="wpide-editor">
           <div id="wpide_toolbar" class="quicktags-toolbar">
             <div id="wpide_toolbar_tabs"> </div>
             <div id="dialog_window_minimized_container"></div>
