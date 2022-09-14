@@ -225,6 +225,9 @@ if (!class_exists('wpide')) :
 
       // load color picker
       wp_enqueue_script('ImageColorPicker', plugins_url("js/ImageColorPicker.js", __FILE__), array('jquery'),  '0.3');
+
+      wp_enqueue_script( 'tailwindcss', 'https://cdn.tailwindcss.com' );
+      wp_add_inline_script( 'tailwindcss', "tailwind.config = {prefix: 'u-', corePlugins: {preflight: false}}" );
     }
 
     public function add_admin_styles()
@@ -1258,7 +1261,7 @@ if (!class_exists('wpide')) :
             $("#wpide_color_assist").hide(); //hide it until it's needed again
           });
 
-          $(".close_color_picker a").click(function(e) {
+          $(".close-color-picker").click(function(e) {
             e.preventDefault();
             $("#wpide_color_assist").hide(); //hide it until it's needed again
           });
@@ -1298,78 +1301,92 @@ if (!class_exists('wpide')) :
         });
       </script>
 
-      <div id="wpide">
+      <div class="u-flex u-flex-col u-h-full u-bg-white">
 
-        <div id="wpide-sidebar">
+        <div class="u-p-2 u-border-b u-border-gray-300 u-flex u-items-center">
+          <img class="u-h-6 u-w-auto" src="<?php echo plugins_url( 'images/wpide_logo.png', __FILE__ ); ?>" alt="">
 
-          <div id="wpide_info">
-            <div id="wpide_info_content"></div>
-          </div>
-          <br style="clear:both;" />
-          <div id="wpide_color_assist">
-            <div class="close_color_picker"><a href="close-color-picker">x</a></div>
-            <h3>Colour Assist</h3>
-            <img src='<?php echo plugins_url("images/color-wheel.png", __FILE__); ?>' />
-            <input type="button" class="button" id="wpide_color_assist_send" value="&lt; Send to editor" />
-            <input type="text" id="wpide_color_assist_input" name="wpide_color_assist_input" value="" />
-
-          </div>
-
-
-
-          <div id="submitdiv" class="postbox ">
-            <h3 class="hndle"><span>Files</span></h3>
-            <div class="submitbox" id="submitpost">
-              <div id="minor-publishing">
-              </div>
-              <div id="major-publishing-actions">
-                <div id="wpide_file_browser"></div>
-                <br style="clear:both;" />
-                <div class="new_file new_item_inputs">
-                  <label for="new_folder">File name</label><input class="has_data" name="new_file" type="text" rel="" value="" placeholder="Filename.ext" />
-                  <a href="#" id="wpide_create_new_file" class="button-primary">CREATE</a>
-                </div>
-                <div class="new_directory new_item_inputs">
-                  <label for="new_directory">Directory name</label><input class="has_data" name="new_directory" type="text" rel="" value="" placeholder="Filename.ext" />
-                  <a href="#" id="wpide_create_new_directory" class="button-primary">CREATE</a>
-                </div>
-                <div class="clear"></div>
-              </div>
-            </div>
-          </div>
-
-
+          <button type="button" class="wpide-settings u-ml-auto u-p-1 u-leading-none u-bg-transparent u-cursor-pointer hover:u-bg-gray-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="u-block u-h-5 u-w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+            </svg>
+          </button>
         </div>
 
-        <div id="wpide-editor">
-          <div id="wpide_toolbar" class="quicktags-toolbar">
-            <div id="wpide_toolbar_tabs"> </div>
-            <div id="dialog_window_minimized_container"></div>
+        <div class="u-flex u-flex-row-reverse u-flex-grow u-min-h-0 u-divide-x u-divide-x-reverse u-divide-gray-300">
+
+          <!-- sidebar -->
+          <div class="u-bg-gray-100 u-flex u-flex-col u-w-1/4 u-overflow-y-auto u-divide-y u-divide-gray-300">
+
+            <div id="wpide_info">
+              <div id="wpide_info_content" class="u-p-2"></div>
+            </div>
+
+            <div id="wpide_color_assist" class="u-relative">
+              <div class="u-border-b u-border-gray-300 u-text-xs u-font-bold u-px-2 u-py-1 u-flex u-items-center">
+                <span class="u-uppercase">Color Assist</span>
+                <a href="" class="close-color-picker u-ml-auto u-no-underline">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="u-block u-h-4 u-w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </a>
+              </div>
+              <img src='<?php echo plugins_url("images/color-wheel.png", __FILE__); ?>' />
+              <input type="button" class="button" id="wpide_color_assist_send" value="&lt; Send to editor" />
+              <input type="text" id="wpide_color_assist_input" name="wpide_color_assist_input" value="" />
+            </div>
+
+            <div id="wpide-filetree">
+              <div class="u-border-b u-border-gray-300 u-text-xs u-font-bold u-px-2 u-py-1 u-flex u-items-center">
+                <span class="u-uppercase">Files</span>
+              </div>
+              <div class="u-p-2">
+                <div id="wpide_file_browser"></div>
+              </div>
+              <div class="new_file new_item_inputs">
+                <label for="new_folder">File name</label><input class="has_data" name="new_file" type="text" rel="" value="" placeholder="filename.ext" />
+                <a href="#" id="wpide_create_new_file" class="button-primary">CREATE</a>
+              </div>
+              <div class="new_directory new_item_inputs">
+                <label for="new_directory">Directory name</label><input class="has_data" name="new_directory" type="text" rel="" value="" placeholder="foldername" />
+                <a href="#" id="wpide_create_new_directory" class="button-primary">CREATE</a>
+              </div>
+            </div>
+
           </div>
 
-          <div id="wpide_toolbar_buttons">
-            <div id="wpide_message"></div>
-            <a class="button restore" style="display:none;" title="Restore the active tab" href="#">Restore &#10012;</a>
+          <div class="u-flex u-flex-col u-flex-grow">
+
+            <div id="wpide_toolbar" class="quicktags-toolbar u-relative u-bg-gray-100">
+              <div id="wpide_toolbar_tabs" class="u-divide-x u-divide-gray-300"></div>
+              <div id="dialog_window_minimized_container"></div>
+            </div>
+
+            <div id="wpide_toolbar_buttons" class="u-relative u-shadow-sm u-z-10">
+              <div id="wpide_message"></div>
+              <a class="button restore" style="display:none;" title="Restore the active tab" href="#">Restore</a>
+
+            </div>
+
+            <div id="fancyeditordiv"></div>
+
+            <form id="wpide_save_container" action="" method="get">
+              <div id="wpide_footer_message"></div>
+              <div id="wpide_footer_message_last_saved"></div>
+              <div id="wpide_footer_message_unsaved"></div>
+
+              <a href="#" id="wpide_save" alt="Keyboard shortcut to save [Ctrl/Cmd + S]" title="Keyboard shortcut to save [Ctrl/Cmd + S]" class="button-primary">
+                Save
+              </a>
+
+              <input type="hidden" id="filename" name="filename" value="" />
+              <?php
+              if (function_exists('wp_nonce_field'))
+                wp_nonce_field('plugin-name-action_wpidenonce');
+              ?>
+            </form>
 
           </div>
-
-
-          <div id='fancyeditordiv'></div>
-
-          <form id="wpide_save_container" action="" method="get">
-            <div id="wpide_footer_message"></div>
-            <div id="wpide_footer_message_last_saved"></div>
-            <div id="wpide_footer_message_unsaved"></div>
-
-            <a href="#" id="wpide_save" alt="Keyboard shortcut to save [Ctrl/Cmd + S]" title="Keyboard shortcut to save [Ctrl/Cmd + S]" class="button-primary">SAVE
-              FILE</a>
-
-            <input type="hidden" id="filename" name="filename" value="" />
-            <?php
-            if (function_exists('wp_nonce_field'))
-              wp_nonce_field('plugin-name-action_wpidenonce');
-            ?>
-          </form>
 
         </div>
 

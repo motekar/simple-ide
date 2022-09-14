@@ -1559,9 +1559,7 @@ jQuery(document).ready(function($) {
 
 	});
 
-	$("#submitdiv h3")
-		.append('<a href="#" class="wpide-settings">')
-		.find('a')
+	$(".wpide-settings")
 		.bind('click', display_editor_settings);
 
     $("#wpide_file_browser").on("contextmenu", ".directory > a, .file > a", display_context_menu);
