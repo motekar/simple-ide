@@ -1,13 +1,29 @@
 /* This is to make sure the IDE does not overlap anything else in the window */
-.toplevel_page_wpide #wpcontent {
-  z-index: 10;
+#wpcontent {
+  height: calc(100vh - 32px);
+  padding-left: 0;
   position: relative;
+  z-index: 10;
 }
 
-#wpide-wrap {
+#wpcontent #wpbody {
+  height: 100%;
+}
+
+#wpcontent #wpbody #wpbody-content {
+  height: 100%;
+  padding-bottom: 0;
+}
+
+#wpfooter {
+	display: none;
+}
+
+#wpide {
   display: flex;
   flex-direction: row-reverse;
-  gap: 20px;
+  gap: 5px;
+  height: 100%;
 }
 
 #wpide-sidebar {
@@ -19,6 +35,8 @@
 }
 
 #wpide-editor {
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
 }
 
@@ -29,24 +47,10 @@
 .ace_print_margin {
   display: none;
 }
-#fancyeditordiv {
-  position: relative;
-  width: 70%;
-  height: 400px;
-}
 #template div {
   margin-right: 0 !important;
 }
 
-#fancyeditordiv #resizer {
-  width: 16px;
-  height: 16px;
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
-  cursor: nw-resize;
-  background-image: url('images/resize-handle.png');
-}
 #template div {
   margin-right: 0 !important;
 }
@@ -68,7 +72,6 @@
 #wpide_toolbar .wpide_tab {
   position: relative;
   height: 18px;
-  font: 13px/18px Arial, Helvetica, sans-serif normal;
   margin-top: -2px;
   margin-right: 2px;
   padding: 6px;
@@ -77,22 +80,14 @@
   cursor: pointer;
   border-width: 1px;
   border-style: solid;
-  -webkit-border-top-right-radius: 3px;
-  -webkit-border-top-left-radius: 3px;
   border-top-right-radius: 3px;
   border-top-left-radius: 3px;
   background-color: #e8e8e8;
   border-color: #dfdfdf #dfdfdf #ccc;
-  color: #b00001;
   text-decoration: none;
-  font-style: italic;
-  -moz-opacity: 0.6;
-  filter: alpha(opacity=60);
   opacity: 0.6;
 }
 #wpide_toolbar .wpide_tab.active {
-  -moz-opacity: 1;
-  filter: alpha(opacity=1);
   opacity: 1;
   border-left-color: #bbb;
   border-right-color: #bbb;
@@ -140,9 +135,6 @@
 }
 .toplevel_page_wpide #submitdiv h3.hndle,
 .toplevel_page_wpide #docinfodiv h3.hndle {
-  font-family: Georgia, 'Times New Roman';
-  font-size: 15px;
-  font-weight: bold;
   padding: 7px 10px;
   margin: 0;
   line-height: 1;
@@ -242,7 +234,7 @@
   padding-left: 10px;
   display: block;
   color: #555;
-  font-family: courier;
+  font-family: monospace;
 }
 .wpide_func_desc {
   color: #333;
@@ -258,6 +250,7 @@
 }
 
 #fancyeditordiv {
+  flex-grow: 1;
   width: 100%;
   min-height: 300px;
   /* Stop browser text selection of the editor.
@@ -418,13 +411,6 @@
 div.ImageColorPickerWrapper {
 }
 
-#wpfooter {
-	position:relative;
-}
-#wpbody-content {
-  padding-bottom: 0;
-}
-
 #editor_settings_dialog {
   padding: 25px;
 }
@@ -536,8 +522,6 @@ div.ImageColorPickerWrapper {
 ul.jqueryFileTree a {
   overflow: hidden;
   text-overflow: ellipsis;
-  min-width: 123px;
-  margin-right: 26px;
 }
 
 .jqueryFileTree .create_new a {
@@ -585,7 +569,6 @@ ul.jqueryFileTree a {
   -webkit-user-select: none;
   user-select: none;
   cursor: pointer;
-  font-size: 14px;
 }
 #wpide_file_browser .wpide-context-menu li:hover {
   background-color: #dfdfdf;

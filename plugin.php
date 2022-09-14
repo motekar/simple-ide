@@ -1298,7 +1298,7 @@ if (!class_exists('wpide')) :
         });
       </script>
 
-      <div id="wpide-wrap">
+      <div id="wpide">
 
         <div id="wpide-sidebar">
 

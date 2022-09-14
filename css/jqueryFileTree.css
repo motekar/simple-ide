@@ -21,8 +21,6 @@ UL.jqueryFileTree A {
 	padding: 0 2px;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	min-width: 123px;
-	margin-right: 26px;
 }
 
 .jqueryFileTree .create_new a {
@@ -30,7 +28,7 @@ UL.jqueryFileTree A {
 	max-width: 24px;
 	width: 24px;
 }
- 
+
 .jqueryFileTree .directory,
 .jqueryFileTree .file {
 	border: 1px solid transparent;

@@ -14,12 +14,13 @@ var TokenIterator = require("ace/token_iterator").TokenIterator;
 
 var oHandler;
 
-var editor_options = {resizer:{}};
+var editor_options = {};
 
 function onSessionChange(e)  {
 
     //set the document as unsaved
     jQuery(".wpide_tab.active", "#wpide_toolbar").data( "unsaved", true);
+    jQuery(".wpide_tab.active", "#wpide_toolbar").addClass( "modified" );
     jQuery("#wpide_footer_message_unsaved").html("[ Document contains unsaved content &#9998; ]").show();
 
 	if( editor.getSession().enable_autocomplete === false){
@@ -677,13 +678,6 @@ function selectACitem (item) {
 	} else {
 		editor.insert('\n');
 	}
-}
-
-function update_scroll_bars_for_resizer() {
-    if ( jQuery( ".ace_scroller" ).css( 'overflowX' ) != 'scroll' ) {
-        var height = jQuery( ".ace_sb" ).height();
-        jQuery( ".ace_sb" ).height( height-16 );
-    }
 }
 
 // Initiate editor settings
@@ -1565,55 +1559,6 @@ jQuery(document).ready(function($) {
 
 	});
 
-
-    // Add our resizer to the
-	$("#fancyeditordiv").prepend('<span id="resizer"></span>');
-
-	// Create resizer handle
-	$("#fancyeditordiv span#resizer").bind('mousedown', function(e) {
-		e = e || window.event;
-
-		var offset = e.offsetY;
-
-		if ( offset === undefined ) {
-			offset = 0;
-		}
-
-		window.editor_options.resizer.handler_offset = (15-offset) - 30;
-
-		function movement_handler(e) {
-			var line_height = editor.renderer.lineHeight;
-			var curr_height = $("#fancyeditordiv").height();
-
-			var o           = jQuery('#wpide_toolbar_buttons').offset();
-
-			// Calculate new height.
-			var new_height	 = e.clientY;                                        // Get mouse Y position in window.
-			new_height		-= o.top;                                            // Add offset from top of window.
-			new_height		+= window.editor_options.resizer.handler_offset;     // Add offset from resizer handle.
-			new_height		+= jQuery(window).scrollTop();                     // Add window scroll offset.
-			new_height		 = Math.round(new_height / line_height) * line_height;     // Round to nearest line height
-
-			// Do not allow if less than 230px
-			if (new_height > 230 || new_height > curr_height) {
-				$("#fancyeditordiv").height(++new_height);
-				editor.resize();
-			}
-		}
-
-		function cancel_drag() {
-			$(window)
-				.unbind('mousemove', movement_handler)
-				.unbind('mouseup', cancel_drag);
-		}
-
-		// Detect movements on mouse
-		$(window).bind('mousemove', movement_handler);
-		$(window).bind('mouseup', cancel_drag);
-
-	});
-
-
 	$("#submitdiv h3")
 		.append('<a href="#" class="wpide-settings">')
 		.find('a')
@@ -1631,10 +1576,6 @@ jQuery(document).ready(function($) {
 
         $("#fancyeditordiv").height(size + 'px');
     })();
-
-	editor.on('changeSession', function(e) {
-		update_scroll_bars_for_resizer();
-	});
 
 	load_editor_settings();
 	editor.resize();
