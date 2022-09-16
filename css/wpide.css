@@ -56,10 +56,10 @@
   position: relative;
   padding: 6px;
   padding-right: 20px;
-  float: left;
   cursor: pointer;
   border-right: 1px solid #ccc;
   text-decoration: none;
+  white-space: nowrap;
 }
 #wpide_toolbar .wpide_tab.active {
   background-color: white;
@@ -97,20 +97,6 @@
   padding: 7px 10px;
   margin: 0;
   line-height: 1;
-}
-
-#wpide_toolbar_buttons {
-  min-height: 30px;
-  overflow: hidden;
-}
-
-#wpide_toolbar_buttons a {
-  display: block;
-  float: right;
-  margin: 2px;
-}
-#wpide_toolbar_buttons .red {
-  color: #bc201d;
 }
 
 #wpwrap div.ace_gutter {
@@ -204,12 +190,6 @@
 #wpide_footer_message_last_saved,
 #wpide_footer_message_unsaved {
   display: none;
-  padding: 8px;
-  font-size: 12px;
-  color: #666;
-}
-#wpide_footer_message_unsaved {
-  color: #bc201d;
 }
 
 #wpide_save {
@@ -386,12 +366,12 @@ ul.jqueryFileTree a {
 
 .jqueryFileTree .directory > a:hover,
 .jqueryFileTree .file > a:hover {
-  background-color: #bdf;
+  background-color: #ddd;
 }
 
 .jqueryFileTree .directory > a:active,
 .jqueryFileTree .file > a:active {
-  background-color: #bdf;
+  background-color: #ddd;
 }
 
 #wpide_file_browser .wpide-context-menu {

@@ -467,6 +467,8 @@ function wpide_set_file_contents(file, callback_func){
 		var the_path = file.replace(/^.*[\\\/]/, '').trim();
 		var the_id = "wpide_tab_" + last_added_editor_session;
 
+		jQuery('#wpide_toolbar_buttons').show();
+
 		//enable editor now we have a file open
 		jQuery('#fancyeditordiv textarea').removeAttr("disabled");
 		editor.setReadOnly(false);
@@ -586,6 +588,9 @@ function wpide_set_file_contents(file, callback_func){
            //Clear the active editor if all tabs closed or activate first tab if required since the active tab may have been deleted
            if (jQuery(".wpide_tab").length == 0){
                editor.getSession().setValue( "" );
+			   jQuery('#wpide_toolbar_buttons').hide();
+			   jQuery('#wpide_footer_message_last_saved').hide();
+			   jQuery('#wpide_footer_message_unsaved').hide();
            }else if ( activeFallback ){
                jQuery( "#" + jQuery(".wpide_tab")[0].id ).click();
            }
@@ -603,7 +608,9 @@ function wpide_set_file_contents(file, callback_func){
 
 }
 
-function saveDocument() {
+function saveDocument(e) {
+	e.preventDefault();
+
     // Make sure there is actually a document open
     jQuery("#wpide_message").stop(true,true);
     if (jQuery("#wpide_message").is(":visible")) {
