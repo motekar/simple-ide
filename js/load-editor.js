@@ -16,6 +16,12 @@ var oHandler;
 
 var editor_options = {};
 
+var close_svg = `
+	<svg xmlns="http://www.w3.org/2000/svg" class="u-block u-h-4 u-w-4" viewBox="0 0 20 20" fill="currentColor">
+		<path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+	</svg>
+`;
+
 function onSessionChange(e)  {
 
     //set the document as unsaved
@@ -174,10 +180,6 @@ function onSessionChange(e)  {
 	if (autocomplete_wordpress){
 		var tag;
 		for(i in autocomplete_wordpress) {
-			//if(!html_tags.hasOwnProperty(i) ){
-			//	continue;
-			//}
-
 			tag= i;
 			//see if the tag is a match
 			if( text !== tag.substr(0,text.length) ){
@@ -473,18 +475,29 @@ function wpide_set_file_contents(file, callback_func){
 		jQuery('#fancyeditordiv textarea').removeAttr("disabled");
 		editor.setReadOnly(false);
 
-		jQuery("#wpide_toolbar_tabs").append('<span id="'+the_id+'" sessionrel="'+last_added_editor_session+'"  title="  '+file+' " rel="'+file+'" class="wpide_tab">'+ the_path +'<a class="close_tab" href="#">x</a></span>');
+		var tab = `
+			<div
+				id="${the_id}"
+				sessionrel="${last_added_editor_session}"
+				title="${file}"
+				rel="${file}"
+				class="wpide_tab u-inline-flex u-items-center u-px-2 u-min-h-[2rem] u-cursor-pointer u-border-r u-border-gray-300 u-whitespace-nowrap">
+				<span class="u-px-2">${the_path}</span>
+				<a class="close_tab" href="#">${close_svg}</a>
+			</div>
+		`;
+		jQuery("#wpide_toolbar_tabs").append(tab);
 
 		saved_editor_sessions[last_added_editor_session] = new EditSession(response);//set saved session
 		saved_editor_sessions[last_added_editor_session].on('change', onSessionChange);
 		saved_undo_manager[last_added_editor_session] = new UndoManager(editor.getSession().getUndoManager());//new undo manager for this session
 
-        saved_editor_sessions[last_added_editor_session].on("changeScrollTop", onSessionScroll);
+		saved_editor_sessions[last_added_editor_session].on("changeScrollTop", onSessionScroll);
 
 		last_added_editor_session++; //increment session counter
 
 		//add click event for the new tab.
-        //We are actually clearing the click event and adding it again for all tab elements, it's the only way I could get the click handler listening on all dynamically added tabs
+		//We are actually clearing the click event and adding it again for all tab elements, it's the only way I could get the click handler listening on all dynamically added tabs
 		jQuery(".wpide_tab").off('click').on("click", function(event){
 			event.preventDefault();
 
@@ -496,67 +509,64 @@ function wpide_set_file_contents(file, callback_func){
 			saved_editor_sessions[ clicksesh ].setUndoManager(saved_undo_manager[ clicksesh ]);
 			editor.setSession( saved_editor_sessions[ clicksesh ] );
 
-            //set this tab as active
-            jQuery(".wpide_tab").removeClass('active');
-            jQuery(this).addClass('active');
+			//set this tab as active
+			jQuery(".wpide_tab").removeClass('active');
+			jQuery(this).addClass('active');
 
 			var currentFilename = jQuery(this).attr('rel');
 			var mode;
 
-            //turn autocomplete off initially, then enable as needed
-            editor.getSession().enable_autocomplete = false;
+			//turn autocomplete off initially, then enable as needed
+			editor.getSession().enable_autocomplete = false;
 
-            //set the editor mode based on file name
+			//set the editor mode based on file name
 			if (/\.css$/.test(currentFilename)) {
 				mode = require("ace/mode/css").Mode;
-			}
-            else if (/\.less$/.test(currentFilename)) {
+			} else if (/\.less$/.test(currentFilename)) {
 				mode = require("ace/mode/less").Mode;
-			}
-			else if (/\.js$/.test(currentFilename)) {
+			} else if (/\.js$/.test(currentFilename)) {
 				mode = require("ace/mode/javascript").Mode;
-			}
-			else {
+			} else {
 				mode = require("ace/mode/php").Mode; //default to PHP
 
-                //only enable session change / auto complete for PHP
-                if (/\.php$/.test(currentFilename))
-                    editor.getSession().enable_autocomplete = true;
+				//only enable session change / auto complete for PHP
+				if (/\.php$/.test(currentFilename))
+					editor.getSession().enable_autocomplete = true;
 			}
 			editor.getSession().setMode(new mode());
 
-            editor.getSession().on('change', onSessionChange);
+			editor.getSession().on('change', onSessionChange);
 
-            editor.getSession().selection.on('changeSelection', selectionChanged);
+			editor.getSession().selection.on('changeSelection', selectionChanged);
 
 			editor.resize();
 			editor.focus();
 			//make a note of current editor
 			current_editor_session = clicksesh;
 
-            //hide/show the restore button if it's a php file and the restore url is set (i.e saved in this session)
-            if ( /\.php$/i.test( currentFilename ) && jQuery(".wpide_tab.active", "#wpide_toolbar").data( "backup" ) != undefined ){
-                jQuery("#wpide_toolbar_buttons .button.restore").show();
-            }else{
-                jQuery("#wpide_toolbar_buttons .button.restore").hide();
-            }
+			//hide/show the restore button if it's a php file and the restore url is set (i.e saved in this session)
+			if ( /\.php$/i.test( currentFilename ) && jQuery(".wpide_tab.active", "#wpide_toolbar").data( "backup" ) != undefined ){
+				jQuery("#wpide_toolbar_buttons .button.restore").show();
+			} else {
+				jQuery("#wpide_toolbar_buttons .button.restore").hide();
+			}
 
-            //show hide unsaved content message
-            if (  jQuery(".wpide_tab.active", "#wpide_toolbar").data( "unsaved" ) ){
-                jQuery("#wpide_footer_message_unsaved").html("[ Document contains unsaved content &#9998; ]").show();
-            }else{
-                jQuery("#wpide_footer_message_unsaved").hide();
-            }
+			//show hide unsaved content message
+			if (  jQuery(".wpide_tab.active", "#wpide_toolbar").data( "unsaved" ) ){
+				jQuery("#wpide_footer_message_unsaved").html("[ Document contains unsaved content &#9998; ]").show();
+			} else {
+				jQuery("#wpide_footer_message_unsaved").hide();
+			}
 
-            //show last saved message if it's been saved
-            if ( jQuery(".wpide_tab.active", "#wpide_toolbar").data( "lastsave" ) != undefined){
-                jQuery("#wpide_footer_message_last_saved").html("<strong>Last saved: </strong>" + jQuery(".wpide_tab.active", "#wpide_toolbar").data( "lastsave" ) ).show();
-            }else{
-                jQuery("#wpide_footer_message_last_saved").hide();
-            }
+			//show last saved message if it's been saved
+			if ( jQuery(".wpide_tab.active", "#wpide_toolbar").data( "lastsave" ) != undefined){
+				jQuery("#wpide_footer_message_last_saved").html("<strong>Last saved: </strong>" + jQuery(".wpide_tab.active", "#wpide_toolbar").data( "lastsave" ) ).show();
+			}else{
+				jQuery("#wpide_footer_message_last_saved").hide();
+			}
 
-            //hide the message if we have a fresh tab
-            jQuery("#wpide_message").hide();
+			//hide the message if we have a fresh tab
+			jQuery("#wpide_message").hide();
 		});
 
 		//add click event for tab close.

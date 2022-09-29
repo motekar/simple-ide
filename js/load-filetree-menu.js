@@ -3,7 +3,7 @@ function display_context_menu(e) {
     e.stopPropagation();
 
     var $this       = jQuery(this),
-        $parent     = $this.parent()
+        $parent     = $this.parent(),
         left        = e.offsetX,
         is_file     = $parent.hasClass("file"),
         is_dir      = $parent.hasClass("directory"),
@@ -77,7 +77,7 @@ function display_context_menu(e) {
                     .on("click", function() {
                         wpide_upload_file($this.attr("rel"), function(){alert("Callback")});
                     });
-    
+
             return $item;
         });
     } else {
@@ -88,7 +88,7 @@ function display_context_menu(e) {
                     .on("click", function() {
                         wpide_download_file($this.attr("rel"), function(){alert("Callback")});
                     });
-    
+
             return $item;
         });
     }
@@ -303,7 +303,7 @@ function wpide_zip_file(file, callback_func) {
             the_filetree();
         } else {
             jQuery("ul.jqueryFileTree a[rel='"+ folder +"']").click().click();
-        }        
+        }
     });
 }
 
@@ -322,6 +322,6 @@ function wpide_unzip_file(file, callback_func) {
             the_filetree();
         } else {
             jQuery("ul.jqueryFileTree a[rel='"+ folder +"']").click().click();
-        }        
+        }
     });
 }

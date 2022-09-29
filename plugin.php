@@ -1147,7 +1147,6 @@ if (!class_exists('wpide')) :
     ?>
       <script>
         var wpide_app_path = "<?php echo plugin_dir_url(__FILE__); ?>";
-        //dont think this is needed any more.. var wpide_file_root_url = "<?php echo apply_filters("wpide_file_root_url", WP_CONTENT_URL); ?>";
         var user_nonce_addition = '';
 
         function the_filetree() {
@@ -1157,18 +1156,17 @@ if (!class_exists('wpide')) :
             collapseSpeed: 250,
           }, function(parent, file) {
 
+            jQuery(".new_item_inputs").hide();
+
             if (jQuery(parent).hasClass("create_new")) { //create new file/folder
               //to create a new item we need to know the name of it so show input
 
               var item = eval('(' + file + ')');
 
-              //hide all inputs just incase one is selected
-              jQuery(".new_item_inputs").hide();
               //show the input form for this
               jQuery("div.new_" + item.type).show();
               jQuery("div.new_" + item.type + " input[name='new_" + item.type + "']").focus();
               jQuery("div.new_" + item.type + " input[name='new_" + item.type + "']").attr("rel", file);
-
 
             } else if (jQuery(".wpide_tab[rel='" + file + "']").length > 0) { //focus existing tab
               jQuery(".wpide_tab[sessionrel='" + jQuery(".wpide_tab[rel='" + file + "']").attr("sessionrel") + "']").click(); //focus the already open tab
@@ -1176,59 +1174,13 @@ if (!class_exists('wpide')) :
 
               var image_pattern = new RegExp("(\\.jpg$|\\.gif$|\\.png$|\\.bmp$)");
               if (image_pattern.test(file)) {
-                //it's an image so open it for editing
-
-                //using modal+iframe
-                if ("lets not" == "use the modal for now") {
-
-                  var NewDialog = jQuery('<div id="MenuDialog">\
-							<iframe src="http://www.sumopaint.com/app/?key=ebcdaezjeojbfgih&target=<?php echo get_bloginfo('url') . "?action=wpide_image_save"; ?>&url=<?php echo get_bloginfo('url') . "/wp-content"; ?>' + file + '&title=Edit image&service=Save back to WPide" width="100%" height="600px"> </iframe>\
-						    </div>');
-                  NewDialog.dialog({
-                    modal: true,
-                    title: "title",
-                    show: 'clip',
-                    hide: 'clip',
-                    width: '800',
-                    height: '600'
-                  });
-
-                } else { //open in new tab/window
-
-                  var data = {
-                    action: 'wpide_image_edit_key',
-                    file: file,
-                    _wpnonce: jQuery('#_wpnonce').val(),
-                    _wp_http_referer: jQuery('#_wp_http_referer').val()
-                  };
-                  var image_data = '';
-                  jQuery.ajaxSetup({
-                    async: false
-                  }); //we need to wait until we get the response before opening the window
-                  jQuery.post(ajaxurl, data, function(response) {
-
-                    //with the response (which is a nonce), build the json data to pass to the image editor. The edit key (nonce) is only valid to edit this image
-                    image_data = file + '::' + response;
-
-                  });
-
-                  jQuery.ajaxSetup({
-                    async: true
-                  }); //enable async again
-
-
-                  window.open('http://www.sumopaint.com/app/?key=ebcdaezjeojbfgih&url=<?php echo $app_url . "/wp-content"; ?>' + file + '&opt=' + image_data + '&title=Edit image&service=Save back to WPide&target=<?php echo urlencode($app_url . "/wp-admin/admin.php?wpide_save_image=yes"); ?>');
-
-                }
-
+                // TODO: open image tab
               } else {
                 jQuery(parent).addClass('wait');
 
                 wpide_set_file_contents(file, function() {
-
                   //once file loaded remove the wait class/indicator
                   jQuery(parent).removeClass('wait');
-
                 });
 
                 jQuery('#filename').val(file);
@@ -1239,12 +1191,7 @@ if (!class_exists('wpide')) :
           });
         }
 
-
-
         jQuery(document).ready(function($) {
-
-          //                $("#fancyeditordiv").css("height", ($('body').height()-120) + 'px' );
-
           // Handler for .ready() called.
           the_filetree();
 
@@ -1339,7 +1286,7 @@ if (!class_exists('wpide')) :
               <input type="text" id="wpide_color_assist_input" name="wpide_color_assist_input" value="" />
             </div>
 
-            <div id="wpide-filetree">
+            <div id="wpide-filetree" class="u-relative">
               <div class="u-border-b u-border-gray-300 u-text-xs u-font-bold u-px-2 u-py-1 u-flex u-items-center">
                 <span class="u-uppercase">Files</span>
               </div>
@@ -1358,31 +1305,30 @@ if (!class_exists('wpide')) :
 
           <div class="u-flex u-flex-col u-flex-grow u-min-w-0">
 
-            <div id="wpide_toolbar" class="quicktags-toolbar u-relative u-bg-gray-100">
-              <div id="wpide_toolbar_tabs" class="u-flex u-items-center u-overflow-x-auto"></div>
-              <div id="dialog_window_minimized_container"></div>
-            </div>
+            <div id="wpide_toolbar" class="u-relative u-bg-gray-100 u-flex u-border-b u-border-gray-300">
+              <div id="wpide_toolbar_tabs" class="u-flex-1 u-flex u-overflow-x-auto"></div>
 
-            <div id="wpide_toolbar_buttons" class="u-relative u-shadow u-z-10" style="display: none;">
-              <div class="u-flex u-items-center">
-                <div id="wpide_message" class="u-flex-grow"></div>
+              <div id="wpide_toolbar_buttons" style="display: none;">
+                <div class="u-flex u-items-center u-justify-end">
+                  <div id="wpide_message" class="u-mr-4"></div>
 
-                <div class="u-flex u-items-center u-ml-auto u-p-1 u-gap-1">
-                  <a class="button restore" style="display:none;" title="Restore the active tab" href="#">Restore</a>
+                  <div class="u-flex u-items-center u-p-1 u-gap-1">
+                    <a class="button restore" style="display:none;" title="Restore the active tab" href="#">Restore</a>
 
-                  <a href="#" id="wpide_save" title="Keyboard shortcut to save [Ctrl/Cmd + S]" class="button-primary u-flex u-items-center u-p-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="u-h-5 u-w-5 u-mr-2" viewBox="0 0 20 20" fill="currentColor">
-                      <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
-                    </svg>
-                    <span>Save</span>
-                  </a>
+                    <a href="#" id="wpide_save" title="Keyboard shortcut to save [Ctrl/Cmd + S]" class="button-primary u-flex u-items-center u-p-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="u-h-5 u-w-5 u-mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
+                      </svg>
+                      <span>Save</span>
+                    </a>
+                  </div>
+
+                  <input type="hidden" id="filename" name="filename" value="" />
+                  <?php
+                  if (function_exists('wp_nonce_field'))
+                    wp_nonce_field('plugin-name-action_wpidenonce');
+                  ?>
                 </div>
-
-                <input type="hidden" id="filename" name="filename" value="" />
-                <?php
-                if (function_exists('wp_nonce_field'))
-                  wp_nonce_field('plugin-name-action_wpidenonce');
-                ?>
               </div>
             </div>
 

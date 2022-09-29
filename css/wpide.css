@@ -53,31 +53,15 @@
 }
 
 #wpide_toolbar .wpide_tab {
-  position: relative;
-  padding: 6px;
-  padding-right: 20px;
-  cursor: pointer;
-  border-right: 1px solid #ccc;
-  text-decoration: none;
-  white-space: nowrap;
 }
 #wpide_toolbar .wpide_tab.active {
-  background-color: white;
+  background: white;
 }
-#wpide_toolbar .wpide_tab.modified::after {
+#wpide_toolbar .wpide_tab.modified span::after {
   content: ' ●';
 }
 
 #wpide_toolbar .close_tab {
-  color: #575757;
-  font-style: normal;
-  padding-bottom: 7px;
-  padding-left: 7px;
-  position: absolute;
-  right: 3px;
-  text-decoration: none;
-  top: -2px;
-  outline: none !important;
 }
 #wpide_toolbar .close_tab:hover {
   color: #b00001;
@@ -163,10 +147,6 @@
 
 #wpide_message {
   display: none;
-  width: 80%;
-  float: left;
-  text-align: left;
-  margin: 0;
   padding: 7px;
 }
 
@@ -392,4 +372,14 @@ ul.jqueryFileTree a {
 }
 #wpide_file_browser .wpide-context-menu li:hover {
   background-color: #dfdfdf;
+}
+
+.new_item_inputs {
+  background: white;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  margin: 0.5rem;
+  padding: 0.5rem;
 }
