@@ -225,15 +225,12 @@ if (!class_exists('wpide')) :
 
       // load color picker
       wp_enqueue_script('ImageColorPicker', plugins_url("js/ImageColorPicker.js", __FILE__), array('jquery'),  '0.3');
-
-      wp_enqueue_script( 'tailwindcss', 'https://cdn.tailwindcss.com' );
-      wp_add_inline_script( 'tailwindcss', "tailwind.config = {important: true, prefix: 'u-', corePlugins: {preflight: false}}" );
     }
 
     public function add_admin_styles()
     {
       //main wpide styles
-      wp_register_style('wpide_style', plugins_url('css/wpide.css', __FILE__));
+      wp_register_style('wpide_style', plugins_url('css/wpide.min.css', __FILE__));
       wp_enqueue_style('wpide_style');
       //filetree styles
       wp_register_style('wpide_filetree_style', plugins_url('css/jqueryFileTree.css', __FILE__));

@@ -1,0 +1,24 @@
+{
+  "name": "classic-wpide",
+  "version": "1.0.0",
+  "description": "Code editor, file editor & file manager with auto-complete for WP & PHP functions with syntax highlighting & automatic backups.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx tailwindcss -i ./src/css/wpide.css -o ./css/wpide.min.css --watch",
+    "build": "npx tailwindcss -i ./src/css/wpide.css -o ./css/wpide.min.css --minify"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/motekar/classic-wpide.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/motekar/classic-wpide/issues"
+  },
+  "homepage": "https://github.com/motekar/classic-wpide#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.1.8"
+  }
+}
