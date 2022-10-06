@@ -3,4 +3,5 @@
 /.wordpress-org
 
 .distignore
+.prettierrc
 readme.md
