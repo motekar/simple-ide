@@ -218,7 +218,7 @@ if (!class_exists('Simple_IDE')) :
       // load filetree menu
       wp_enqueue_script('simple-ide-load-filetree-menu', plugins_url("js/load-filetree-menu.js", __FILE__));
       // load autocomplete dropdown
-      wp_enqueue_script('simple-ide-dd', plugins_url("js/jquery.dd.js", __FILE__));
+      wp_enqueue_script('simple-ide-dd', plugins_url("js/jquery.dd.min.js", __FILE__));
 
       // load jquery ui
       wp_enqueue_script('jquery-ui', plugins_url("js/jquery-ui-1.9.2.custom.min.js", __FILE__), array('jquery'),  '1.9.2');
