@@ -1,5 +1,5 @@
 /* This is to make sure the IDE does not overlap anything else in the window */
-.toplevel_page_wpide #wpcontent {
+.toplevel_page_simple_ide #wpcontent {
   z-index: 10;
   position: relative;
 }
@@ -33,7 +33,7 @@
   margin-right: 0 !important;
 }
 
-#wpide_toolbar {
+#simple_ide_toolbar {
   width: 75%;
   min-height: 30px;
   text-align: right;
@@ -41,15 +41,15 @@
   position: relative;
   float: left;
 }
-#wpide_toolbar form {
+#simple_ide_toolbar form {
   position: absolute;
   left: 104%;
 }
-#wpide_toolbar_tabs {
+#simple_ide_toolbar_tabs {
   width: 100%;
 }
 
-#wpide_toolbar .wpide_tab {
+#simple_ide_toolbar .simple_ide_tab {
   position: relative;
   height: 18px;
   font: 13px/18px Arial, Helvetica, sans-serif normal;
@@ -74,7 +74,7 @@
   filter: alpha(opacity=60);
   opacity: 0.6;
 }
-#wpide_toolbar .wpide_tab.active {
+#simple_ide_toolbar .simple_ide_tab.active {
   -moz-opacity: 1;
   filter: alpha(opacity=1);
   opacity: 1;
@@ -83,15 +83,15 @@
   border-top-color: #bbb;
   border-bottom-color: #dedede;
 }
-#wpide_toolbar .wpide_tab.modified {
+#simple_ide_toolbar .simple_ide_tab.modified {
   color: blue;
   font-weight: bold;
 }
-#wpide_toolbar .wpide-tab.modified:after {
+#simple_ide_toolbar .simple_ide_tab.modified:after {
   content: ' *';
 }
 
-#wpide_toolbar .close_tab {
+#simple_ide_toolbar .close_tab {
   color: #575757;
   font-style: normal;
   padding-bottom: 7px;
@@ -102,28 +102,28 @@
   top: -2px;
   outline: none !important;
 }
-#wpide_toolbar .close_tab:hover {
+#simple_ide_toolbar .close_tab:hover {
   color: #b00001;
   font-weight: bold;
 }
-#wpide_toolbar .close_tab:active {
+#simple_ide_toolbar .close_tab:active {
   color: #444444;
   font-weight: bold;
 }
 
-#wpide_file_browser {
+#simple_ide_file_browser {
   margin-right: 2%;
   text-align: left;
 }
 
-.toplevel_page_wpide #submitdiv,
-.toplevel_page_wpide #docinfodiv h3.hndle {
+.toplevel_page_simple_ide #submitdiv,
+.toplevel_page_simple_ide #docinfodiv h3.hndle {
   width: 100%;
   float: right;
   clear: right;
 }
-.toplevel_page_wpide #submitdiv h3.hndle,
-.toplevel_page_wpide #docinfodiv h3.hndle {
+.toplevel_page_simple_ide #submitdiv h3.hndle,
+.toplevel_page_simple_ide #docinfodiv h3.hndle {
   font-family: Georgia, 'Times New Roman';
   font-size: 15px;
   font-weight: bold;
@@ -132,7 +132,7 @@
   line-height: 1;
 }
 
-#wpide_toolbar_buttons {
+#simple_ide_toolbar_buttons {
   position: relative;
   min-height: 30px;
   width: 75%;
@@ -154,7 +154,7 @@
   border-top-left-radius: 0px;
 }
 
-#wpide_toolbar_buttons a {
+#simple_ide_toolbar_buttons a {
   display: block;
   float: right;
   margin: 2px;
@@ -162,7 +162,7 @@
   height: auto;
   margin-top: 4px;
 }
-#wpide_toolbar_buttons .red {
+#simple_ide_toolbar_buttons .red {
   color: #bc201d;
 }
 
@@ -178,7 +178,7 @@
   z-index: 1000;
 }
 
-#wpide_save_container {
+#simple_ide_save_container {
   float: left;
   clear: left;
   width: 74%;
@@ -192,7 +192,7 @@
   border-radius: 3px;
 }
 
-#wpide_info {
+#simple_ide_info {
   position: relative;
   min-height: 30px;
   width: 100%;
@@ -215,30 +215,30 @@
   border-top-left-radius: 6px;
 }
 
-#wpide_info_content {
+#simple_ide_info_content {
   margin-top: 8px;
   margin-left: 10px;
 }
-.wpide_func_highlight,
-.wpide_func_highlight_black {
+.simple_ide_func_highlight,
+.simple_ide_func_highlight_black {
   font-size: 120%;
 }
-.wpide_func_highlight {
+.simple_ide_func_highlight {
   color: #4a8ead;
 }
-.wpide_func_params {
+.simple_ide_func_params {
   padding-left: 10px;
   display: block;
   color: #555;
   font-family: courier;
 }
-.wpide_func_desc {
+.simple_ide_func_desc {
   color: #333;
 }
-.wpide_func_arg_notrequired {
+.simple_ide_func_arg_notrequired {
   color: #888;
 }
-.wpide_func_arg_notrequired em {
+.simple_ide_func_arg_notrequired em {
   color: green;
   display: block;
   font-size: 80%;
@@ -246,7 +246,7 @@
 }
 
 .inner-sidebar {
-  background-image: url(images/wpide_logo.png);
+  background-image: url(images/simple-ide-logo.png);
   background-repeat: no-repeat;
   background-position: top right;
 }
@@ -264,7 +264,7 @@
   user-select: none;
 }
 
-#wpide_message {
+#simple_ide_message {
   display: none;
   width: 80%;
   float: left;
@@ -273,40 +273,40 @@
   padding: 7px;
 }
 
-#wpide_message a {
+#simple_ide_message a {
   float: none;
   display: inline-block;
   margin: 2px;
 }
 
-#wpide_message span {
+#simple_ide_message span {
   width: 80%;
 }
 
-#wpide_message .note {
+#simple_ide_message .note {
   font-size: 10px;
   margin: 10px 0;
   display: block;
 }
 
-#wpide_footer_message,
-#wpide_footer_message_last_saved,
-#wpide_footer_message_unsaved {
+#simple_ide_footer_message,
+#simple_ide_footer_message_last_saved,
+#simple_ide_footer_message_unsaved {
   display: none;
   float: left;
   padding: 8px;
   font-size: 12px;
   color: #666;
 }
-#wpide_footer_message_unsaved {
+#simple_ide_footer_message_unsaved {
   color: #bc201d;
 }
 
-#wpide_save {
+#simple_ide_save {
   float: right;
 }
 
-#wpide_git {
+#simple_ide_git {
   float: right;
   margin-right: 20px;
   background-image: url(images/git.png);
@@ -466,7 +466,7 @@ div#side-info-column {
   width: 100%;
   overflow: scroll;
 }
-#wpide_color_assist {
+#simple_ide_color_assist {
   position: relative;
   width: 100%;
   background-color: whiteSmoke;
@@ -476,23 +476,23 @@ div#side-info-column {
   margin-left: -2px;
   height: 380px;
 }
-#wpide_color_assist img,
-#wpide_color_assist canvas {
+#simple_ide_color_assist img,
+#simple_ide_color_assist canvas {
   margin: auto;
   display: block;
 }
-#wpide_color_assist canvas.ImageColorPickerCanvasColor {
+#simple_ide_color_assist canvas.ImageColorPickerCanvasColor {
   position: absolute;
   left: 0;
   top: 0;
 }
-#wpide_color_assist input[type='button'] {
+#simple_ide_color_assist input[type='button'] {
   float: left;
   width: 110px;
   margin: 15px 5px;
   font-size: 12px;
 }
-#wpide_color_assist_input {
+#simple_ide_color_assist_input {
   float: left;
   width: 100px;
   margin: 15px 5px;
@@ -512,7 +512,7 @@ div#side-info-column {
   font-size: 16px;
 }
 
-#wpide_color_assist h3 {
+#simple_ide_color_assist h3 {
   background-color: #f1f1f1;
   background-image: -ms-linear-gradient(top, #f9f9f9, #ececec);
   background-image: -moz-linear-gradient(top, #f9f9f9, #ececec);
@@ -553,7 +553,7 @@ div.ImageColorPickerWrapper {
   padding: 25px;
 }
 
-.wpide-settings {
+.simple_ide-settings {
   height: 20px;
   width: 20px;
   background-image: url(images/settings.png);
@@ -572,7 +572,7 @@ div.ImageColorPickerWrapper {
   display: none;
 }
 
-.wpide-settings:hover {
+.simple_ide-settings:hover {
   border-color: #666666;
   background-color: #f2f2f2;
 }
@@ -694,7 +694,7 @@ ul.jqueryFileTree a {
   outline: none !important;
 }
 
-#wpide_file_browser .wpide-context-menu {
+#simple_ide_file_browser .simple-ide__context-menu {
   position: absolute;
   background: white;
   border: 1px solid #aaaaaa;
@@ -703,7 +703,7 @@ ul.jqueryFileTree a {
   border-radius: 3px;
   box-shadow: 6px 6px 11px -7px #333;
 }
-#wpide_file_browser .wpide-context-menu li {
+#simple_ide_file_browser .simple-ide__context-menu li {
   list-style-type: none;
   padding: 3px 6px 3px 20px;
   -webkit-user-select: none;
@@ -711,6 +711,6 @@ ul.jqueryFileTree a {
   cursor: pointer;
   font-size: 14px;
 }
-#wpide_file_browser .wpide-context-menu li:hover {
+#simple_ide_file_browser .simple-ide__context-menu li:hover {
   background-color: #dfdfdf;
 }

@@ -19,8 +19,8 @@ var editor_options = {resizer:{}};
 function onSessionChange(e)  {
 
     //set the document as unsaved
-    jQuery(".wpide_tab.active", "#wpide_toolbar").data( "unsaved", true);
-    jQuery("#wpide_footer_message_unsaved").html("[ Document contains unsaved content &#9998; ]").show();
+    jQuery(".simple_ide_tab.active", "#simple_ide_toolbar").data( "unsaved", true);
+    jQuery("#simple_ide_footer_message_unsaved").html("[ Document contains unsaved content &#9998; ]").show();
 
 	if( editor.getSession().enable_autocomplete === false){
         return;
@@ -110,7 +110,7 @@ function onSessionChange(e)  {
 	//console.log("Searching for text \""+text+"\" length: "+ text.length);
 	if (text.length < 3){
 
-		wpide_close_autocomplete();
+		simple_ide_close_autocomplete();
 		return;
 	}
 
@@ -132,7 +132,7 @@ function onSessionChange(e)  {
         //editor clicks should hide the autocomplete dropdown
         editor.container.addEventListener('click', function(e){
 
-            wpide_close_autocomplete();
+            simple_ide_close_autocomplete();
 
             autocompleting=false;
             autocompletelength = 2;
@@ -189,7 +189,7 @@ function onSessionChange(e)  {
 			var option = document.createElement('option');
 			option.text = tag;
 			option.value = tag;
-			option.setAttribute('title', wpide_app_path + 'images/wpac.png');//path to icon image or wpac.png
+			option.setAttribute('title', simple_ide_app_path + 'images/wpac.png');//path to icon image or wpac.png
 
 
 			try {
@@ -222,7 +222,7 @@ function onSessionChange(e)  {
 			var option = document.createElement('option');
 			option.text = tag;
 			option.value = tag;
-			option.setAttribute('title', wpide_app_path + 'images/phpac.png');//path to icon image or wpac.png
+			option.setAttribute('title', simple_ide_app_path + 'images/phpac.png');//path to icon image or wpac.png
 
 			try {
 				ac.add(option, null); // standards compliant; doesn't work in IE
@@ -238,7 +238,7 @@ function onSessionChange(e)  {
 
 	//check for matches
 	if ( ac.length === 0 ) {
-		wpide_close_autocomplete();
+		simple_ide_close_autocomplete();
 	} else {
 
 		ac.selectedIndex=0;
@@ -279,7 +279,7 @@ function onSessionChange(e)  {
 					//set the selected menu item
 					oHandler.selectedIndex(selected_item_index);
 					//show command help panel for this command
-					wpide_function_help();
+					simple_ide_function_help();
 
 				}
 			}
@@ -295,7 +295,7 @@ function onSessionChange(e)  {
 		jQuery("#ac_msdd").css("left", ac.style.left);
 
 		//show command help panel for this command
-		wpide_function_help();
+		simple_ide_function_help();
 
 	}
 
@@ -332,14 +332,14 @@ function token_test(){
 	return iterator.getCurrentToken();
 }
 
-function wpide_close_autocomplete(){
+function simple_ide_close_autocomplete(){
 	if (typeof document.getElementById('ac') != 'undefined') document.getElementById('ac').style.display='none';
 	if (typeof oHandler != 'undefined') oHandler.close();
 
 	autocompleting = false;
 
 	//clear the text in the command help panel
-	//jQuery("#wpide_info_content").html("");
+	//jQuery("#simple_ide_info_content").html("");
 }
 
 function selectionChanged(e)  {
@@ -354,13 +354,13 @@ function selectionChanged(e)  {
 
         // only show color assist if the character before the selection indicates a hex color (#)
 	    if ( editor.getSession().doc.getTextRange( therange ) == "#" ){
-            jQuery("#wpide_color_assist").show();
+            jQuery("#simple_ide_color_assist").show();
 	    }
 
     }
 }
 
-function wpide_function_help() {
+function simple_ide_function_help() {
   //mouse over
 
 	try
@@ -381,7 +381,7 @@ function wpide_function_help() {
 
 					//wrap params in a span to highlight not required
 					if (autocomplete_wordpress[key].params[i].required == "no"){
-						param_text = param_text + "<span class='wpide_func_arg_notrequired'>" + autocomplete_wordpress[key].params[i]['param'] + "<em>optional</em></span><br /> <br />";
+						param_text = param_text + "<span class='simple_ide_func_arg_notrequired'>" + autocomplete_wordpress[key].params[i]['param'] + "<em>optional</em></span><br /> <br />";
 					}else{
 						param_text = param_text + autocomplete_wordpress[key].params[i]['param'] + "<br /> <br />";
 					}
@@ -396,11 +396,11 @@ function wpide_function_help() {
 
 
 				//output command info
-				jQuery("#wpide_info_content").html(
-								"<strong class='wpide_func_highlight_black'>Function: </strong><strong class='wpide_func_highlight'>" + key  + "(</strong><br />" +
-								   "<span class='wpide_func_desc'>" + autocomplete_wordpress[key].desc + "</span><br /><br /><em class='wpide_func_params'>" +
+				jQuery("#simple_ide_info_content").html(
+								"<strong class='simple_ide_func_highlight_black'>Function: </strong><strong class='simple_ide_func_highlight'>" + key  + "(</strong><br />" +
+								   "<span class='simple_ide_func_desc'>" + autocomplete_wordpress[key].desc + "</span><br /><br /><em class='simple_ide_func_params'>" +
 								   param_text + "</em>"+
-								   "<strong class='wpide_func_highlight'>)</strong> " +
+								   "<strong class='simple_ide_func_highlight'>)</strong> " +
 								   returns_text +
                                    "<p><a href='http://codex.wordpress.org/Function_Reference/" + key  + "' target='_blank'>See " + key  + "() in the WordPress codex</a></p>"
 								   );
@@ -419,7 +419,7 @@ function wpide_function_help() {
 
 					//wrap params in a span to highlight not required
 					if (autocomplete_php[key].params[i].required == "no"){
-						param_text = param_text + "<span class='wpide_func_arg_notrequired'>" + autocomplete_php[key].params[i]['param'] + "<em>optional</em></span><br /> <br />";
+						param_text = param_text + "<span class='simple_ide_func_arg_notrequired'>" + autocomplete_php[key].params[i]['param'] + "<em>optional</em></span><br /> <br />";
 					}else{
 						param_text = param_text + autocomplete_php[key].params[i]['param'] + "<br /> <br />";
 					}
@@ -432,11 +432,11 @@ function wpide_function_help() {
 					returns_text = "";
 				}
 
-				jQuery("#wpide_info_content").html(
-								"<strong class='wpide_func_highlight_black'>Function: </strong><strong class='wpide_func_highlight'>" + key + "(</strong><br />" +
-								   autocomplete_php[key].desc + "<br /><br /><em class='wpide_func_params'>" +
+				jQuery("#simple_ide_info_content").html(
+								"<strong class='simple_ide_func_highlight_black'>Function: </strong><strong class='simple_ide_func_highlight'>" + key + "(</strong><br />" +
+								   autocomplete_php[key].desc + "<br /><br /><em class='simple_ide_func_params'>" +
 								   param_text + "</em>" +
-								   "<strong class='wpide_func_highlight'>)</strong>" +
+								   "<strong class='simple_ide_func_highlight'>)</strong>" +
 								   returns_text +
                                    "<p><a href='http://php.net/manual/en/function." + key.replace(/_/g, "-")  + ".php' target='_blank'>See " + key  + "() in the PHP manual</a></p>"
 								   );
@@ -456,21 +456,21 @@ function wpide_function_help() {
 }
 
 //open another file and add to editor
-function wpide_set_file_contents(file, callback_func){
+function simple_ide_set_file_contents(file, callback_func){
 	"use strict";
 
 	//ajax call to get file contents we are about to edit
-	var data = { action: 'wpide_get_file', filename: file, _wpnonce: jQuery('#_wpnonce').val(), _wp_http_referer: jQuery('#_wp_http_referer').val() };
+	var data = { action: 'simple_ide_get_file', filename: file, _wpnonce: jQuery('#_wpnonce').val(), _wp_http_referer: jQuery('#_wp_http_referer').val() };
 
 	jQuery.post(ajaxurl, data, function(response) {
 		var the_path = file.replace(/^.*[\\\/]/, '').trim();
-		var the_id = "wpide_tab_" + last_added_editor_session;
+		var the_id = "simple_ide_tab_" + last_added_editor_session;
 
 		//enable editor now we have a file open
 		jQuery('#fancyeditordiv textarea').removeAttr("disabled");
 		editor.setReadOnly(false);
 
-		jQuery("#wpide_toolbar_tabs").append('<span id="'+the_id+'" sessionrel="'+last_added_editor_session+'"  title="  '+file+' " rel="'+file+'" class="wpide_tab">'+ the_path +'<a class="close_tab" href="#">x</a></span>');
+		jQuery("#simple_ide_toolbar_tabs").append('<span id="'+the_id+'" sessionrel="'+last_added_editor_session+'"  title="  '+file+' " rel="'+file+'" class="simple_ide_tab">'+ the_path +'<a class="close_tab" href="#">x</a></span>');
 
 		saved_editor_sessions[last_added_editor_session] = new EditSession(response);//set saved session
 		saved_editor_sessions[last_added_editor_session].on('change', onSessionChange);
@@ -482,7 +482,7 @@ function wpide_set_file_contents(file, callback_func){
 
 		//add click event for the new tab.
         //We are actually clearing the click event and adding it again for all tab elements, it's the only way I could get the click handler listening on all dynamically added tabs
-		jQuery(".wpide_tab").off('click').on("click", function(event){
+		jQuery(".simple_ide_tab").off('click').on("click", function(event){
 			event.preventDefault();
 
 			jQuery('input[name=filename]').val( jQuery(this).attr('rel') );
@@ -494,7 +494,7 @@ function wpide_set_file_contents(file, callback_func){
 			editor.setSession( saved_editor_sessions[ clicksesh ] );
 
             //set this tab as active
-            jQuery(".wpide_tab").removeClass('active');
+            jQuery(".simple_ide_tab").removeClass('active');
             jQuery(this).addClass('active');
 
 			var currentFilename = jQuery(this).attr('rel');
@@ -532,28 +532,28 @@ function wpide_set_file_contents(file, callback_func){
 			current_editor_session = clicksesh;
 
             //hide/show the restore button if it's a php file and the restore url is set (i.e saved in this session)
-            if ( /\.php$/i.test( currentFilename ) && jQuery(".wpide_tab.active", "#wpide_toolbar").data( "backup" ) != undefined ){
-                jQuery("#wpide_toolbar_buttons .button.restore").show();
+            if ( /\.php$/i.test( currentFilename ) && jQuery(".simple_ide_tab.active", "#simple_ide_toolbar").data( "backup" ) != undefined ){
+                jQuery("#simple_ide_toolbar_buttons .button.restore").show();
             }else{
-                jQuery("#wpide_toolbar_buttons .button.restore").hide();
+                jQuery("#simple_ide_toolbar_buttons .button.restore").hide();
             }
 
             //show hide unsaved content message
-            if (  jQuery(".wpide_tab.active", "#wpide_toolbar").data( "unsaved" ) ){
-                jQuery("#wpide_footer_message_unsaved").html("[ Document contains unsaved content &#9998; ]").show();
+            if (  jQuery(".simple_ide_tab.active", "#simple_ide_toolbar").data( "unsaved" ) ){
+                jQuery("#simple_ide_footer_message_unsaved").html("[ Document contains unsaved content &#9998; ]").show();
             }else{
-                jQuery("#wpide_footer_message_unsaved").hide();
+                jQuery("#simple_ide_footer_message_unsaved").hide();
             }
 
             //show last saved message if it's been saved
-            if ( jQuery(".wpide_tab.active", "#wpide_toolbar").data( "lastsave" ) != undefined){
-                jQuery("#wpide_footer_message_last_saved").html("<strong>Last saved: </strong>" + jQuery(".wpide_tab.active", "#wpide_toolbar").data( "lastsave" ) ).show();
+            if ( jQuery(".simple_ide_tab.active", "#simple_ide_toolbar").data( "lastsave" ) != undefined){
+                jQuery("#simple_ide_footer_message_last_saved").html("<strong>Last saved: </strong>" + jQuery(".simple_ide_tab.active", "#simple_ide_toolbar").data( "lastsave" ) ).show();
             }else{
-                jQuery("#wpide_footer_message_last_saved").hide();
+                jQuery("#simple_ide_footer_message_last_saved").hide();
             }
 
             //hide the message if we have a fresh tab
-            jQuery("#wpide_message").hide();
+            jQuery("#simple_ide_message").hide();
 		});
 
 		//add click event for tab close.
@@ -563,13 +563,13 @@ function wpide_set_file_contents(file, callback_func){
 		var clicksesh = jQuery(this).parent().attr('sessionrel');
 		var activeFallback;
 
-			if (jQuery("#wpide_footer_message_unsaved").is(":visible")) {
+			if (jQuery("#simple_ide_footer_message_unsaved").is(":visible")) {
 				if (!confirm('Are you sure you wish to close the unsaved document?'))
 					return;
 			}
 
             //if the currently selected tab is being removed then remember to make the first tab active
-            if ( jQuery("#wpide_tab_"+clicksesh).hasClass('active') ) {
+            if ( jQuery("#simple_ide_tab_"+clicksesh).hasClass('active') ) {
                 activeFallback = true;
             }else{
                 activeFallback = false;
@@ -583,10 +583,10 @@ function wpide_set_file_contents(file, callback_func){
 		   saved_editor_sessions[clicksesh] = undefined;
 
            //Clear the active editor if all tabs closed or activate first tab if required since the active tab may have been deleted
-           if (jQuery(".wpide_tab").length == 0){
+           if (jQuery(".simple_ide_tab").length == 0){
                editor.getSession().setValue( "" );
            }else if ( activeFallback ){
-               jQuery( "#" + jQuery(".wpide_tab")[0].id ).click();
+               jQuery( "#" + jQuery(".simple_ide_tab")[0].id ).click();
            }
 
 		});
@@ -604,17 +604,17 @@ function wpide_set_file_contents(file, callback_func){
 
 function saveDocument() {
     // Make sure there is actually a document open
-    jQuery("#wpide_message").stop(true,true);
-    if (jQuery("#wpide_message").is(":visible")) {
-    	jQuery("#wpide_message").fadeOut(50);
+    jQuery("#simple_ide_message").stop(true,true);
+    if (jQuery("#simple_ide_message").is(":visible")) {
+    	jQuery("#simple_ide_message").fadeOut(50);
 	}
 
-	var the_tab = jQuery("#wpide_toolbar_tabs .active");
-	var current_document_index = the_tab.attr('id').replace('wpide_tab_', '');
+	var the_tab = jQuery("#simple_ide_toolbar_tabs .active");
+	var current_document_index = the_tab.attr('id').replace('simple_ide_tab_', '');
 	the_tab.removeClass( 'modified' );
 
     // Display notification to show we are attempting to save
-    jQuery("#wpide_message")
+    jQuery("#simple_ide_message")
         .removeClass('error')
         .removeClass('teapot')
         .addClass('success')
@@ -622,26 +622,26 @@ function saveDocument() {
 		.fadeIn(200);
 
 	//ajax call to save the file and generate a backup if needed
-	var data = { action: 'wpide_save_file', filename: jQuery('input[name=filename]').val(),  _wpnonce: jQuery('#_wpnonce').val(), _wp_http_referer: jQuery('#_wp_http_referer').val(), content: editor.getSession().getValue() };
+	var data = { action: 'simple_ide_save_file', filename: jQuery('input[name=filename]').val(),  _wpnonce: jQuery('#_wpnonce').val(), _wp_http_referer: jQuery('#_wp_http_referer').val(), content: editor.getSession().getValue() };
 	jQuery.post(ajaxurl, data, function(response) {
         var regexchk=/\".*:::.*\"/;
         var saved_when = Date();
 
         if ( regexchk.test(response) ){
             //store the resulting backup file name just incase we need to restore later
-            //temp note: you can then access the data like so  jQuery(".wpide_tab.active", "#wpide_toolbar").data( "backup" );
+            //temp note: you can then access the data like so  jQuery(".simple_ide_tab.active", "#simple_ide_toolbar").data( "backup" );
             user_nonce_addition = response.match(/:::(.*)\"$/)[1]; //need this to send with restore request
-            jQuery(".wpide_tab.active", "#wpide_toolbar").data( "backup", response.replace(/(^\"|:::.*\"$)/g, "") );
-            jQuery(".wpide_tab.active", "#wpide_toolbar").data( "lastsave",  saved_when );
-            jQuery(".wpide_tab.active", "#wpide_toolbar").data( "unsaved", false);
+            jQuery(".simple_ide_tab.active", "#simple_ide_toolbar").data( "backup", response.replace(/(^\"|:::.*\"$)/g, "") );
+            jQuery(".simple_ide_tab.active", "#simple_ide_toolbar").data( "lastsave",  saved_when );
+            jQuery(".simple_ide_tab.active", "#simple_ide_toolbar").data( "unsaved", false);
 
             if ( /\.php$/i.test( data.filename ) )
-                jQuery("#wpide_toolbar_buttons .button.restore").show();
+                jQuery("#simple_ide_toolbar_buttons .button.restore").show();
 
-            jQuery("#wpide_footer_message_last_saved").html("<strong>Last saved: </strong>" + saved_when).show();
-            jQuery("#wpide_footer_message_unsaved").hide();
+            jQuery("#simple_ide_footer_message_last_saved").html("<strong>Last saved: </strong>" + saved_when).show();
+            jQuery("#simple_ide_footer_message_unsaved").hide();
 
-            jQuery("#wpide_message").html('<strong>File saved &#10004;</strong>')
+            jQuery("#simple_ide_message").html('<strong>File saved &#10004;</strong>')
     		.show()
             .delay(2000)
 			.fadeOut(600);
@@ -673,7 +673,7 @@ function selectACitem (item) {
 		editor.selection.setSelectionRange(sel);
 		editor.insert(tag);
 
-		wpide_close_autocomplete();
+		simple_ide_close_autocomplete();
 	} else {
 		editor.insert('\n');
 	}
@@ -1132,7 +1132,7 @@ function filetree_drag_initializer() {
 
     // Allows us to keep dataTransfer in the jQuery event
     jQuery.event.props.push("dataTransfer");
-    jQuery('#wpide_file_browser').on('dragstart', '[draggable=true]', function(e) {
+    jQuery('#simple_ide_file_browser').on('dragstart', '[draggable=true]', function(e) {
         current_element = this;
 
         e.dataTransfer.effectAllowed = 'move';
@@ -1150,7 +1150,7 @@ function filetree_drag_initializer() {
 }
 
 jQuery(document).ready(function($) {
-	$("#wpide_save").click(saveDocument);
+	$("#simple_ide_save").click(saveDocument);
 
     // Find dialog actions
     $("#editor_find_dialog form" ).submit(function( e ) {
@@ -1228,17 +1228,17 @@ jQuery(document).ready(function($) {
     });
 
     // drag and drop colour picker image
-    $("#wpide_color_assist").on('drop', function(e) {
+    $("#simple_ide_color_assist").on('drop', function(e) {
         e.preventDefault();
         e.originalEvent.dataTransfer.items[0].getAsString(function(url){
 
                 $(".ImageColorPickerCanvas", $("#side-info-column") ).remove();
-                $("img", $("#wpide_color_assist")).attr('src', url );
+                $("img", $("#simple_ide_color_assist")).attr('src', url );
 
         });
     });
 
-    $("#wpide_color_assist").on('dragover', function(e) {
+    $("#simple_ide_color_assist").on('dragover', function(e) {
         $(this).addClass("hover");
     }).on('dragleave', function(e) {
         $(this).removeClass("hover");
@@ -1262,11 +1262,11 @@ jQuery(document).ready(function($) {
 
 
     //startup info - usefull for debugging
-        var data = { action: 'wpide_startup_check', _wpnonce: jQuery('#_wpnonce').val(), _wp_http_referer: jQuery('#_wp_http_referer').val() };
+        var data = { action: 'simple_ide_startup_check', _wpnonce: jQuery('#_wpnonce').val(), _wp_http_referer: jQuery('#_wp_http_referer').val() };
 
 		jQuery.post(ajaxurl, data, function(response) {
             if (response == "-1"){
-    			intialData = intialData + "Permission/security problem with ajax request. Refresh WPide and try again. \n\n";
+    			intialData = intialData + "Permission/security problem with ajax request. Refresh Simple IDE and try again. \n\n";
 			}else{
     		    intialData = intialData + response;
 			}
@@ -1318,7 +1318,7 @@ jQuery(document).ready(function($) {
 				oHandler.previous();
 
 				//show command help panel for this command
-				wpide_function_help();
+				simple_ide_function_help();
                 //console.log("handler is visible");
 
 			}else if( document.getElementById('ac').style.display === 'block'  ) {
@@ -1366,7 +1366,7 @@ jQuery(document).ready(function($) {
 				oHandler.next();
 
 				//show command help panel for this command
-				wpide_function_help();
+				simple_ide_function_help();
 
 			}else if ( document.getElementById('ac').style.display === 'block' ) {
 				var select=document.getElementById('ac');
@@ -1522,14 +1522,14 @@ jQuery(document).ready(function($) {
 
 
 	//click action for new directory/file submit link
-	$("#wpide_create_new_directory, #wpide_create_new_file").click(function(e){
+	$("#simple_ide_create_new_directory, #simple_ide_create_new_file").click(function(e){
 		e.preventDefault();
 
 		var data_input = jQuery(this).parent().find("input.has_data");
 		var item = eval('('+ data_input.attr("rel") +')');
 
 		//item.path file|directory
-		var data = { action: 'wpide_create_new', path: item.path, type: item.type, file: data_input.val(), _wpnonce: jQuery('#_wpnonce').val(), _wp_http_referer: jQuery('#_wp_http_referer').val() };
+		var data = { action: 'simple_ide_create_new', path: item.path, type: item.type, file: data_input.val(), _wpnonce: jQuery('#_wpnonce').val(), _wp_http_referer: jQuery('#_wp_http_referer').val() };
 
 		jQuery.post(ajaxurl, data, function(response) {
 
@@ -1555,7 +1555,7 @@ jQuery(document).ready(function($) {
 				jQuery("ul.jqueryFileTree a[rel='"+ item.path +"']").focus();
 
 			}else if (response == "-1"){
-				alert("Permission/security problem. Refresh WPide and try again.");
+				alert("Permission/security problem. Refresh Simple IDE and try again.");
 			}else{
 				alert(response);
 			}
@@ -1585,7 +1585,7 @@ jQuery(document).ready(function($) {
 			var line_height = editor.renderer.lineHeight;
 			var curr_height = $("#fancyeditordiv").height();
 
-			var o           = jQuery('#wpide_toolbar_buttons').offset();
+			var o           = jQuery('#simple_ide_toolbar_buttons').offset();
 
 			// Calculate new height.
 			var new_height	 = e.clientY;                                        // Get mouse Y position in window.
@@ -1615,11 +1615,11 @@ jQuery(document).ready(function($) {
 
 
 	$("#submitdiv h3")
-		.append('<a href="#" class="wpide-settings">')
+		.append('<a href="#" class="simple_ide-settings">')
 		.find('a')
 		.bind('click', display_editor_settings);
 
-    $("#wpide_file_browser").on("contextmenu", ".directory > a, .file > a", display_context_menu);
+    $("#simple_ide_file_browser").on("contextmenu", ".directory > a, .file > a", display_context_menu);
 
     // Figure out the correct size for the editor
     (function() {
