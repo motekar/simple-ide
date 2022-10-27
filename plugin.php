@@ -321,7 +321,7 @@ if (!class_exists('Simple_IDE')) :
 
 
       $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
-      $file_name = $root . stripslashes($_POST['filename']);
+      $file_name = $root . sanitize_text_field( $_POST['filename'] );
       echo $wp_filesystem->get_contents($file_name);
       die(); // this is required to return a proper result
     }
@@ -377,7 +377,7 @@ if (!class_exists('Simple_IDE')) :
           if ($write_result) {
             die("1"); //created
           } else {
-            echo "Problem creating directory" . $root . $path . $filename;
+            echo wp_kses_post( "Problem creating directory" . $root . $path . $filename );
           }
         } else if ($_POST['type'] == "file") {
           //write the file
@@ -390,7 +390,7 @@ if (!class_exists('Simple_IDE')) :
           if ($write_result) {
             die("1"); //created
           } else {
-            echo "Problem creating file " . $root . $path . $filename;
+            echo wp_kses_post( "Problem creating file " . $root . $path . $filename );
           }
         }
         //print_r($_POST);
@@ -448,7 +448,7 @@ if (!class_exists('Simple_IDE')) :
 
       //save a copy of the file and create a backup just in case
       $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
-      $file_name = $root . stripslashes($_POST['filename']);
+      $file_name = $root . sanitize_text_field( $_POST['filename'] );
 
       //set backup filename
       $backup_path = 'backups' . preg_replace("#\.php$#i", "_" . date("Y-m-d-H") . ".php", $_POST['filename']);
@@ -517,7 +517,7 @@ if (!class_exists('Simple_IDE')) :
 
 
       $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
-      $file_name = $root . stripslashes($_POST['filename']);
+      $file_name = $root . sanitize_text_field( $_POST['filename'] );
       $new_name = dirname($file_name) . '/' . stripslashes($_POST['newname']);
 
       if (!$wp_filesystem->exists($file_name)) {
@@ -562,7 +562,7 @@ if (!class_exists('Simple_IDE')) :
 
 
       $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
-      $file_name = $root . stripslashes($_POST['filename']);
+      $file_name = $root . sanitize_text_field( $_POST['filename'] );
 
       if (!$wp_filesystem->exists($file_name)) {
         echo 'The file doesn\'t exist!';
@@ -645,7 +645,7 @@ if (!class_exists('Simple_IDE')) :
         echo "Cannot initialise the WP file system API";
 
       $root    = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
-      $file_name  = $root . stripslashes($_POST['filename']);
+      $file_name  = $root . sanitize_text_field( $_POST['filename'] );
 
       if (!$wp_filesystem->exists($file_name)) {
         echo 'The file doesn\'t exist!';
@@ -674,7 +674,7 @@ if (!class_exists('Simple_IDE')) :
       }
 
       $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
-      $file_name = $root . stripslashes($_POST['filename']);
+      $file_name = $root . sanitize_text_field( $_POST['filename'] );
 
       $url     = wp_nonce_url('admin.php?page=simple_ide', 'simple_ide_nonce');
       $form_fields = null; // for now, but at some point the login info should be passed in here
@@ -921,7 +921,7 @@ if (!class_exists('Simple_IDE')) :
       }
 
       $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
-      $file_name = $root . stripslashes($_POST['filename']);
+      $file_name = $root . sanitize_text_field( $_POST['filename'] );
 
       $url     = wp_nonce_url('admin.php?page=simple_ide', 'simple_ide_nonce');
       $form_fields = null; // for now, but at some point the login info should be passed in here
@@ -1007,7 +1007,7 @@ if (!class_exists('Simple_IDE')) :
 
       //save a copy of the file and create a backup just in case
       $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
-      $file_name = $root . stripslashes($_POST['filename']);
+      $file_name = $root . sanitize_text_field( $_POST['filename'] );
 
       //set backup filename
       $backup_path = 'backups' . preg_replace("#\.php$#i", "_" . date("Y-m-d-H") . ".php", $_POST['filename']);
