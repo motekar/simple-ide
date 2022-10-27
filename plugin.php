@@ -29,6 +29,8 @@ if (!defined('ABSPATH')) {
   die();
 }
 
+require('vendor/autoload.php');
+
 if (!class_exists('Simple_IDE')) :
   class Simple_IDE
   {
@@ -419,7 +421,6 @@ if (!class_exists('Simple_IDE')) :
 
         $is_php = true;
 
-        require('PHP-Parser/lib/bootstrap.php');
         ini_set('xdebug.max_nesting_level', 2000);
 
         $code = stripslashes($_POST['content']);

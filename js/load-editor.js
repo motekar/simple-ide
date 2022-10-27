@@ -661,7 +661,9 @@ function simple_ide_set_file_contents(file, callback_func) {
   });
 }
 
-function saveDocument() {
+function saveDocument(ev) {
+  if (ev) ev.preventDefault();
+
   // Make sure there is actually a document open
   jQuery('#simple_ide_message').stop(true, true);
   if (jQuery('#simple_ide_message').is(':visible')) {
