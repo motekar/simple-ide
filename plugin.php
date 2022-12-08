@@ -216,20 +216,20 @@ if (!class_exists('Simple_IDE')) :
       // php-completion tags
       wp_enqueue_script('simple-ide-php-completion', plugins_url("js/autocomplete/php.js", __FILE__));
       // load editor
-      wp_enqueue_script('simple-ide-load-editor', plugins_url("js/load-editor.js", __FILE__), array( 'jquery-ui-dialog' ) );
+      wp_enqueue_script('simple-ide-load-editor', plugins_url("js/load-editor.js", __FILE__), array('jquery-ui-dialog'));
       // load filetree menu
       wp_enqueue_script('simple-ide-load-filetree-menu', plugins_url("js/load-filetree-menu.js", __FILE__));
       // load autocomplete dropdown
       wp_enqueue_script('simple-ide-dd', plugins_url("js/jquery.dd.min.js", __FILE__));
 
       // load color picker
-      wp_enqueue_script('ImageColorPicker', plugins_url("js/ImageColorPicker.js", __FILE__), array( 'jquery-ui-widget' ),  '0.3');
+      wp_enqueue_script('ImageColorPicker', plugins_url("js/ImageColorPicker.js", __FILE__), array('jquery-ui-widget'),  '0.3');
     }
 
     public function add_admin_styles()
     {
       //main Simple IDE styles
-      wp_enqueue_style('simple-ide-style', plugins_url('css/simple-ide.css', __FILE__), array( 'wp-jquery-ui-dialog' ) );
+      wp_enqueue_style('simple-ide-style', plugins_url('css/simple-ide.css', __FILE__), array('wp-jquery-ui-dialog'));
       //filetree styles
       wp_enqueue_style('simple-ide-filetree-style', plugins_url('css/jqueryFileTree.css', __FILE__));
       //autocomplete dropdown styles
@@ -321,7 +321,7 @@ if (!class_exists('Simple_IDE')) :
 
 
       $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
-      $file_name = $root . sanitize_text_field( $_POST['filename'] );
+      $file_name = $root . sanitize_text_field($_POST['filename']);
       echo $wp_filesystem->get_contents($file_name);
       die(); // this is required to return a proper result
     }
@@ -377,7 +377,7 @@ if (!class_exists('Simple_IDE')) :
           if ($write_result) {
             die("1"); //created
           } else {
-            echo wp_kses_post( "Problem creating directory" . $root . $path . $filename );
+            echo wp_kses_post("Problem creating directory" . $root . $path . $filename);
           }
         } else if ($_POST['type'] == "file") {
           //write the file
@@ -390,7 +390,7 @@ if (!class_exists('Simple_IDE')) :
           if ($write_result) {
             die("1"); //created
           } else {
-            echo wp_kses_post( "Problem creating file " . $root . $path . $filename );
+            echo wp_kses_post("Problem creating file " . $root . $path . $filename);
           }
         }
         //print_r($_POST);
@@ -409,6 +409,7 @@ if (!class_exists('Simple_IDE')) :
       }
 
       $is_php = false;
+      $content = base64_decode(sanitize_textarea_field($_POST['content']));
 
       /*
         * Check file syntax of PHP files by parsing the PHP
@@ -423,7 +424,7 @@ if (!class_exists('Simple_IDE')) :
 
         ini_set('xdebug.max_nesting_level', 2000);
 
-        $code = stripslashes($_POST['content']);
+        $code = stripslashes($content);
 
         $parser = (new \PhpParser\ParserFactory)->create(\PhpParser\ParserFactory::PREFER_PHP7);
 
@@ -448,7 +449,7 @@ if (!class_exists('Simple_IDE')) :
 
       //save a copy of the file and create a backup just in case
       $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
-      $file_name = $root . sanitize_text_field( $_POST['filename'] );
+      $file_name = $root . sanitize_text_field($_POST['filename']);
 
       //set backup filename
       $backup_path = 'backups' . preg_replace("#\.php$#i", "_" . date("Y-m-d-H") . ".php", $_POST['filename']);
@@ -481,7 +482,7 @@ if (!class_exists('Simple_IDE')) :
       }
 
       //save file
-      if ($wp_filesystem->put_contents($file_name, stripslashes($_POST['content']))) {
+      if ($wp_filesystem->put_contents($file_name, $content)) {
 
         //lets create an extra long nonce to make it less crackable
         global $current_user;
@@ -517,7 +518,7 @@ if (!class_exists('Simple_IDE')) :
 
 
       $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
-      $file_name = $root . sanitize_text_field( $_POST['filename'] );
+      $file_name = $root . sanitize_text_field($_POST['filename']);
       $new_name = dirname($file_name) . '/' . stripslashes($_POST['newname']);
 
       if (!$wp_filesystem->exists($file_name)) {
@@ -562,7 +563,7 @@ if (!class_exists('Simple_IDE')) :
 
 
       $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
-      $file_name = $root . sanitize_text_field( $_POST['filename'] );
+      $file_name = $root . sanitize_text_field($_POST['filename']);
 
       if (!$wp_filesystem->exists($file_name)) {
         echo 'The file doesn\'t exist!';
@@ -645,7 +646,7 @@ if (!class_exists('Simple_IDE')) :
         echo "Cannot initialise the WP file system API";
 
       $root    = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
-      $file_name  = $root . sanitize_text_field( $_POST['filename'] );
+      $file_name  = $root . sanitize_text_field($_POST['filename']);
 
       if (!$wp_filesystem->exists($file_name)) {
         echo 'The file doesn\'t exist!';
@@ -674,7 +675,7 @@ if (!class_exists('Simple_IDE')) :
       }
 
       $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
-      $file_name = $root . sanitize_text_field( $_POST['filename'] );
+      $file_name = $root . sanitize_text_field($_POST['filename']);
 
       $url     = wp_nonce_url('admin.php?page=simple_ide', 'simple_ide_nonce');
       $form_fields = null; // for now, but at some point the login info should be passed in here
@@ -921,7 +922,7 @@ if (!class_exists('Simple_IDE')) :
       }
 
       $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
-      $file_name = $root . sanitize_text_field( $_POST['filename'] );
+      $file_name = $root . sanitize_text_field($_POST['filename']);
 
       $url     = wp_nonce_url('admin.php?page=simple_ide', 'simple_ide_nonce');
       $form_fields = null; // for now, but at some point the login info should be passed in here
@@ -1007,7 +1008,7 @@ if (!class_exists('Simple_IDE')) :
 
       //save a copy of the file and create a backup just in case
       $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
-      $file_name = $root . sanitize_text_field( $_POST['filename'] );
+      $file_name = $root . sanitize_text_field($_POST['filename']);
 
       //set backup filename
       $backup_path = 'backups' . preg_replace("#\.php$#i", "_" . date("Y-m-d-H") . ".php", $_POST['filename']);
