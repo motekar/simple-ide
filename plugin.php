@@ -1245,7 +1245,7 @@ if (!class_exists('Simple_IDE')) :
       <div class="u-flex u-flex-col u-h-full u-bg-white">
 
         <div class="u-p-2 u-border-b u-border-gray-300 u-flex u-items-center">
-          <img class="u-h-6 u-w-auto" src="<?php echo plugins_url( 'images/simple_ide_logo.png', __FILE__ ); ?>" alt="">
+          <img class="u-h-6 u-w-auto" src="<?php echo plugins_url( 'images/simple-ide-logo.png', __FILE__ ); ?>" alt="">
 
           <button type="button" class="simple-ide-settings button u-ml-auto u-flex u-items-center u-p-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="u-h-5 u-w-5 u-mr-2" viewBox="0 0 20 20" fill="currentColor">
