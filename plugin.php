@@ -216,23 +216,20 @@ if (!class_exists('Simple_IDE')) :
       // php-completion tags
       wp_enqueue_script('simple-ide-php-completion', plugins_url("js/autocomplete/php.js", __FILE__));
       // load editor
-      wp_enqueue_script('simple-ide-load-editor', plugins_url("js/load-editor.js", __FILE__));
+      wp_enqueue_script('simple-ide-load-editor', plugins_url("js/load-editor.js", __FILE__), array('jquery-ui-dialog'));
       // load filetree menu
       wp_enqueue_script('simple-ide-load-filetree-menu', plugins_url("js/load-filetree-menu.js", __FILE__));
       // load autocomplete dropdown
-      wp_enqueue_script('simple-ide-dd', plugins_url("js/jquery.dd.js", __FILE__));
-
-      // load jquery ui
-      wp_enqueue_script('jquery-ui', plugins_url("js/jquery-ui-1.9.2.custom.min.js", __FILE__), array('jquery'),  '1.9.2');
+      wp_enqueue_script('simple-ide-dd', plugins_url("js/jquery.dd.min.js", __FILE__));
 
       // load color picker
-      wp_enqueue_script('ImageColorPicker', plugins_url("js/ImageColorPicker.js", __FILE__), array('jquery'),  '0.3');
+      wp_enqueue_script('ImageColorPicker', plugins_url("js/ImageColorPicker.js", __FILE__), array('jquery-ui-widget'),  '0.3');
     }
 
     public function add_admin_styles()
     {
       //main Simple IDE styles
-      wp_register_style('simple_ide_style', plugins_url('css/simple-ide.min.css', __FILE__));
+      wp_register_style('simple_ide_style', plugins_url('css/simple-ide.min.css', __FILE__), array('wp-jquery-ui-dialog'));
       wp_enqueue_style('simple_ide_style');
       //filetree styles
       wp_register_style('simple_ide_filetree_style', plugins_url('css/jqueryFileTree.css', __FILE__));
@@ -241,9 +238,6 @@ if (!class_exists('Simple_IDE')) :
       wp_register_style('simple_ide_dd_style', plugins_url('css/dd.css', __FILE__));
       wp_enqueue_style('simple_ide_dd_style');
 
-      //jquery ui styles
-      wp_register_style('simple_ide_jqueryui_style', plugins_url('css/flick/jquery-ui-1.8.20.custom.css', __FILE__));
-      wp_enqueue_style('simple_ide_jqueryui_style');
     }
 
     public function jqueryFileTree_get_list()
