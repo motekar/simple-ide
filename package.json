@@ -1,11 +1,11 @@
 {
-  "name": "classic-wpide",
+  "name": "simple-ide",
   "version": "1.0.0",
   "description": "Code editor, file editor & file manager with auto-complete for WP & PHP functions with syntax highlighting & automatic backups.",
   "main": "index.js",
   "scripts": {
-    "dev": "npx tailwindcss -i ./src/css/wpide.css -o ./css/wpide.min.css --watch",
-    "build": "npx tailwindcss -i ./src/css/wpide.css -o ./css/wpide.min.css --minify"
+    "dev": "npx tailwindcss -i ./src/css/simple-ide.css -o ./css/simple-ide.min.css --watch",
+    "build": "pnpx tailwindcss -i ./src/css/simple-ide.css -o ./css/simple-ide.min.css --minify"
   },
   "repository": {
     "type": "git",

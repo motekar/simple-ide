@@ -1,15 +1,15 @@
 <?php
 /*
-  Plugin Name: Classic WPide
+  Plugin Name: Simple IDE
   Plugin URI: https://github.com/motekar/classic-wpide
   Description: WordPress code editor with auto-completion of both WordPress and PHP functions with reference, syntax highlighting, line numbers, tabbed editing, automatic backup.
-  Version: 2.7
+  Version: 1.0
   Author: Motekar
   Author URI: https://www.motekar.com
   Requires PHP: 5.5
   Requires at least: 4.9
   Tested up to: 6.0
-  Text Domain: classic-wpide
+  Text Domain: simple-ide
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License, version 2, as
@@ -29,8 +29,10 @@ if (!defined('ABSPATH')) {
   die();
 }
 
-if (!class_exists('wpide')) :
-  class wpide
+require('vendor/autoload.php');
+
+if (!class_exists('Simple_IDE')) :
+  class Simple_IDE
   {
 
     public $site_url, $plugin_url;
@@ -42,16 +44,16 @@ if (!class_exists('wpide')) :
 
       $this->get_plugin_version();
 
-      // add WPide to the menu
+      // add Simple IDE to the menu
       add_action('admin_menu', array($this, 'add_my_menu_page'));
 
       // hook for processing incoming image saves
-      if (is_admin() && isset($_GET['wpide_save_image'])) {
+      if (is_admin() && isset($_GET['simple_ide_save_image'])) {
 
         // force local file method for testing - you could force other methods 'direct', 'ssh', 'ftpext' or 'ftpsockets'
         $this->override_fs_method('direct');
 
-        add_action('admin_init', array($this, 'wpide_save_image'));
+        add_action('admin_init', array($this, 'simple_ide_save_image'));
       }
 
       add_action('admin_init', array($this, 'setup_hooks'));
@@ -63,7 +65,7 @@ if (!class_exists('wpide')) :
     public function override_fs_method($method = 'direct')
     {
       if (defined('FS_METHOD')) {
-        define('WPIDE_FS_METHOD_FORCED_ELSEWHERE', FS_METHOD); //make a note of the forced method
+        define('SIMPLE_IDE_FS_METHOD_FORCED_ELSEWHERE', FS_METHOD); //make a note of the forced method
       } else {
         define('FS_METHOD', $method); //force direct
       }
@@ -97,7 +99,7 @@ if (!class_exists('wpide')) :
       // you could force other methods 'direct', 'ssh', 'ftpext' or 'ftpsockets'
       $this->override_fs_method('direct');
 
-      // Will only enqueue on WPide page
+      // Will only enqueue on Simple IDE page
       add_action('admin_print_scripts-' . $this->menu_hook, array($this, 'add_admin_js'));
       add_action('admin_print_styles-' . $this->menu_hook, array($this, 'add_admin_styles'));
 
@@ -106,31 +108,31 @@ if (!class_exists('wpide')) :
       //setup jqueryFiletree list callback
       add_action('wp_ajax_jqueryFileTree', array($this, 'jqueryFileTree_get_list'));
       //setup ajax function to get file contents for editing
-      add_action('wp_ajax_wpide_get_file',  array($this, 'wpide_get_file'));
+      add_action('wp_ajax_simple_ide_get_file',  array($this, 'simple_ide_get_file'));
       //setup ajax function to save file contents and do automatic backup if needed
-      add_action('wp_ajax_wpide_save_file',  array($this, 'wpide_save_file'));
+      add_action('wp_ajax_simple_ide_save_file',  array($this, 'simple_ide_save_file'));
       //setup ajax function to rename file/folder
-      add_action('wp_ajax_wpide_rename_file', array($this, 'wpide_rename_file'));
+      add_action('wp_ajax_simple_ide_rename_file', array($this, 'simple_ide_rename_file'));
       //setup ajax function to delete file/folder
-      add_action('wp_ajax_wpide_delete_file', array($this, 'wpide_delete_file'));
+      add_action('wp_ajax_simple_ide_delete_file', array($this, 'simple_ide_delete_file'));
       //setup ajax function to handle upload
-      add_action('wp_ajax_wpide_upload_file', array($this, 'wpide_upload_file'));
+      add_action('wp_ajax_simple_ide_upload_file', array($this, 'simple_ide_upload_file'));
       //setup ajax function to handle download
-      add_action('wp_ajax_wpide_download_file', array($this, 'wpide_download_file'));
+      add_action('wp_ajax_simple_ide_download_file', array($this, 'simple_ide_download_file'));
       //setup ajax function to unzip file
-      add_action('wp_ajax_wpide_unzip_file', array($this, 'wpide_unzip_file'));
+      add_action('wp_ajax_simple_ide_unzip_file', array($this, 'simple_ide_unzip_file'));
       //setup ajax function to zip file
-      add_action('wp_ajax_wpide_zip_file', array($this, 'wpide_zip_file'));
+      add_action('wp_ajax_simple_ide_zip_file', array($this, 'simple_ide_zip_file'));
       //setup ajax function to create new item (folder, file etc)
-      add_action('wp_ajax_wpide_create_new', array($this, 'wpide_create_new'));
+      add_action('wp_ajax_simple_ide_create_new', array($this, 'simple_ide_create_new'));
 
       //setup ajax function to create new item (folder, file etc)
-      add_action('wp_ajax_wpide_image_edit_key', array($this, 'wpide_image_edit_key'));
+      add_action('wp_ajax_simple_ide_image_edit_key', array($this, 'simple_ide_image_edit_key'));
 
       //setup ajax function for startup to get some debug info, checking permissions etc
-      add_action('wp_ajax_wpide_startup_check', array($this, 'wpide_startup_check'));
+      add_action('wp_ajax_simple_ide_startup_check', array($this, 'simple_ide_startup_check'));
 
-      //add a warning when navigating away from WPide
+      //add a warning when navigating away from Simple IDE
       //it has to go after WordPress scripts otherwise WP clears the binding
       // This has been implemented in load-editor.js
       // todo:
@@ -152,7 +154,7 @@ if (!class_exists('wpide')) :
     // add settings link to plugins page
     function plugin_action_links($links)
     {
-      $settings_link = '<a href="' . admin_url('admin.php?page=wpide') . '" title="Manage Files">Manage Files</a>';
+      $settings_link = '<a href="' . admin_url('admin.php?page=simple_ide') . '" title="Manage Files">Manage Files</a>';
 
       array_unshift($links, $settings_link);
 
@@ -168,7 +170,7 @@ if (!class_exists('wpide')) :
         return $classes;
       }
 
-      if (apply_filters('wpide_sidebar_folded', $hook_suffix === $this->menu_hook)) {
+      if (apply_filters('simple_ide_sidebar_folded', $hook_suffix === $this->menu_hook)) {
         return str_replace("auto-fold", "", $classes) . ' folded';
       }
     }
@@ -188,7 +190,7 @@ if (!class_exists('wpide')) :
       <script type="text/javascript">
         jQuery(document).ready(function($) {
           window.onbeforeunload = function() {
-            return 'You are attempting to navigate away from WPide. Make sure you have saved any changes made to your files otherwise they will be forgotten.';
+            return 'You are attempting to navigate away from Simple IDE. Make sure you have saved any changes made to your files otherwise they will be forgotten.';
           }
         });
       </script>
@@ -210,15 +212,15 @@ if (!class_exists('wpide')) :
       //include ace theme
       wp_enqueue_script('ace-theme', plugins_url("js/ace-1.5.0/theme-dawn.js", __FILE__)); //ambiance looks really nice for high contrast
       // wordpress-completion tags
-      wp_enqueue_script('wpide-wordpress-completion', plugins_url("js/autocomplete/wordpress.js", __FILE__));
+      wp_enqueue_script('simple-ide-wordpress-completion', plugins_url("js/autocomplete/wordpress.js", __FILE__));
       // php-completion tags
-      wp_enqueue_script('wpide-php-completion', plugins_url("js/autocomplete/php.js", __FILE__));
+      wp_enqueue_script('simple-ide-php-completion', plugins_url("js/autocomplete/php.js", __FILE__));
       // load editor
-      wp_enqueue_script('wpide-load-editor', plugins_url("js/load-editor.js", __FILE__));
+      wp_enqueue_script('simple-ide-load-editor', plugins_url("js/load-editor.js", __FILE__));
       // load filetree menu
-      wp_enqueue_script('wpide-load-filetree-menu', plugins_url("js/load-filetree-menu.js", __FILE__));
+      wp_enqueue_script('simple-ide-load-filetree-menu', plugins_url("js/load-filetree-menu.js", __FILE__));
       // load autocomplete dropdown
-      wp_enqueue_script('wpide-dd', plugins_url("js/jquery.dd.js", __FILE__));
+      wp_enqueue_script('simple-ide-dd', plugins_url("js/jquery.dd.js", __FILE__));
 
       // load jquery ui
       wp_enqueue_script('jquery-ui', plugins_url("js/jquery-ui-1.9.2.custom.min.js", __FILE__), array('jquery'),  '1.9.2');
@@ -229,31 +231,31 @@ if (!class_exists('wpide')) :
 
     public function add_admin_styles()
     {
-      //main wpide styles
-      wp_register_style('wpide_style', plugins_url('css/wpide.min.css', __FILE__));
-      wp_enqueue_style('wpide_style');
+      //main Simple IDE styles
+      wp_register_style('simple_ide_style', plugins_url('css/simple-ide.min.css', __FILE__));
+      wp_enqueue_style('simple_ide_style');
       //filetree styles
-      wp_register_style('wpide_filetree_style', plugins_url('css/jqueryFileTree.css', __FILE__));
-      wp_enqueue_style('wpide_filetree_style');
+      wp_register_style('simple_ide_filetree_style', plugins_url('css/jqueryFileTree.css', __FILE__));
+      wp_enqueue_style('simple_ide_filetree_style');
       //autocomplete dropdown styles
-      wp_register_style('wpide_dd_style', plugins_url('css/dd.css', __FILE__));
-      wp_enqueue_style('wpide_dd_style');
+      wp_register_style('simple_ide_dd_style', plugins_url('css/dd.css', __FILE__));
+      wp_enqueue_style('simple_ide_dd_style');
 
       //jquery ui styles
-      wp_register_style('wpide_jqueryui_style', plugins_url('css/flick/jquery-ui-1.8.20.custom.css', __FILE__));
-      wp_enqueue_style('wpide_jqueryui_style');
+      wp_register_style('simple_ide_jqueryui_style', plugins_url('css/flick/jquery-ui-1.8.20.custom.css', __FILE__));
+      wp_enqueue_style('simple_ide_jqueryui_style');
     }
 
     public function jqueryFileTree_get_list()
     {
       //check the user has the permissions
-      check_admin_referer('plugin-name-action_wpidenonce');
+      check_admin_referer('simple_ide_nonce');
       if (!current_user_can('edit_themes'))
         wp_die('<p>You do not have sufficient permissions to edit files for this site.</p>');
 
       //setup wp_filesystem api
       global $wp_filesystem;
-      $url = wp_nonce_url('admin.php?page=wpide', 'plugin-name-action_wpidenonce');
+      $url = wp_nonce_url('admin.php?page=simple_ide', 'simple_ide_nonce');
       $form_fields = null; // for now, but at some point the login info should be passed in here
       if (false === ($creds = request_filesystem_credentials($url, FS_METHOD, false, false, $form_fields))) {
         // no credentials yet, just produced a form for the user to fill in
@@ -264,7 +266,7 @@ if (!class_exists('wpide')) :
         return false;
 
       $_POST['dir'] = urldecode($_POST['dir']);
-      $root = apply_filters('wpide_filesystem_root', WP_CONTENT_DIR);
+      $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
 
       if ($wp_filesystem->exists($root . $_POST['dir'])) {
 
@@ -309,16 +311,16 @@ if (!class_exists('wpide')) :
     }
 
 
-    public function wpide_get_file()
+    public function simple_ide_get_file()
     {
       //check the user has the permissions
-      check_admin_referer('plugin-name-action_wpidenonce');
+      check_admin_referer('simple_ide_nonce');
       if (!current_user_can('edit_themes'))
         wp_die('<p>You do not have sufficient permissions to edit files for this site.</p>');
 
       //setup wp_filesystem api
       global $wp_filesystem;
-      $url = wp_nonce_url('admin.php?page=wpide', 'plugin-name-action_wpidenonce');
+      $url = wp_nonce_url('admin.php?page=simple_ide', 'simple_ide_nonce');
       $form_fields = null; // for now, but at some point the login info should be passed in here
       if (false === ($creds = request_filesystem_credentials($url, FS_METHOD, false, false, $form_fields))) {
         // no credentials yet, just produced a form for the user to fill in
@@ -328,36 +330,36 @@ if (!class_exists('wpide')) :
         return false;
 
 
-      $root = apply_filters('wpide_filesystem_root', WP_CONTENT_DIR);
+      $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
       $file_name = $root . stripslashes($_POST['filename']);
       echo $wp_filesystem->get_contents($file_name);
       die(); // this is required to return a proper result
     }
 
-    public function wpide_image_edit_key()
+    public function simple_ide_image_edit_key()
     {
 
       //check the user has the permissions
-      check_admin_referer('plugin-name-action_wpidenonce');
+      check_admin_referer('simple_ide_nonce');
       if (!current_user_can('edit_themes')) {
         wp_die('<p>You do not have sufficient permissions to edit files for this site.</p>');
       }
 
       //create a nonce based on the image path
-      echo wp_create_nonce('wpide_image_edit' . $_POST['file']);
+      echo wp_create_nonce('simple_ide_image_edit' . $_POST['file']);
     }
 
-    public function wpide_create_new()
+    public function simple_ide_create_new()
     {
       //check the user has the permissions
-      check_admin_referer('plugin-name-action_wpidenonce');
+      check_admin_referer('simple_ide_nonce');
       if (!current_user_can('edit_themes')) {
         wp_die('<p>You do not have sufficient permissions to edit files for this site.</p>');
       }
 
       //setup wp_filesystem api
       global $wp_filesystem;
-      $url = wp_nonce_url('admin.php?page=wpide', 'plugin-name-action_wpidenonce');
+      $url = wp_nonce_url('admin.php?page=simple_ide', 'simple_ide_nonce');
       $form_fields = null; // for now, but at some point the login info should be passed in here
       if (false === ($creds = request_filesystem_credentials($url, FS_METHOD, false, false, $form_fields))) {
         // no credentials yet, just produced a form for the user to fill in
@@ -366,7 +368,7 @@ if (!class_exists('wpide')) :
       if (!WP_Filesystem($creds))
         return false;
 
-      $root = apply_filters('wpide_filesystem_root', WP_CONTENT_DIR);
+      $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
 
       //check all required vars are passed
       if (strlen($_POST['path']) > 0 && strlen($_POST['type']) > 0 && strlen($_POST['file']) > 0) {
@@ -408,10 +410,10 @@ if (!class_exists('wpide')) :
       die(); // this is required to return a proper result
     }
 
-    public function wpide_save_file()
+    public function simple_ide_save_file()
     {
       //check the user has the permissions
-      check_admin_referer('plugin-name-action_wpidenonce');
+      check_admin_referer('simple_ide_nonce');
       if (!current_user_can('edit_themes')) {
         wp_die('<p>You do not have sufficient permissions to edit files for this site.</p>');
       }
@@ -429,7 +431,6 @@ if (!class_exists('wpide')) :
 
         $is_php = true;
 
-        require('PHP-Parser/lib/bootstrap.php');
         ini_set('xdebug.max_nesting_level', 2000);
 
         $code = stripslashes($_POST['content']);
@@ -446,7 +447,7 @@ if (!class_exists('wpide')) :
 
       //setup wp_filesystem api
       global $wp_filesystem;
-      $url = wp_nonce_url('admin.php?page=wpide', 'plugin-name-action_wpidenonce');
+      $url = wp_nonce_url('admin.php?page=simple_ide', 'simple_ide_nonce');
       $form_fields = null; // for now, but at some point the login info should be passed in here
       if (false === ($creds = request_filesystem_credentials($url, FS_METHOD, false, false, $form_fields))) {
         // no credentials yet, just produced a form for the user to fill in
@@ -456,7 +457,7 @@ if (!class_exists('wpide')) :
         echo "Cannot initialise the WP file system API";
 
       //save a copy of the file and create a backup just in case
-      $root = apply_filters('wpide_filesystem_root', WP_CONTENT_DIR);
+      $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
       $file_name = $root . stripslashes($_POST['filename']);
 
       //set backup filename
@@ -472,16 +473,16 @@ if (!class_exists('wpide')) :
         wp_get_current_user();
         $user_md5 = md5(serialize($current_user));
 
-        $restore_php = '<?php /* start WPide restore code */
+        $restore_php = '<?php /* start Simple IDE restore code */
                                     if ($_POST["restorewpnonce"] === "' .  $user_md5 . $_POST['_wpnonce'] . '"){
-                                        if ( file_put_contents ( "' . $file_name . '" ,  preg_replace("#<\?php /\* start WPide(.*)end WPide restore code \*/ \?>#s", "", file_get_contents("' . $backup_path_full . '") )  ) ){
+                                        if ( file_put_contents ( "' . $file_name . '" ,  preg_replace("#<\?php /\* start Simple IDE(.*)end Simple IDE restore code \*/ \?>#s", "", file_get_contents("' . $backup_path_full . '") )  ) ){
                                             echo "Your file has been restored, overwritting the recently edited file! \n\n The active editor still contains the broken or unwanted code. If you no longer need that content then close the tab and start fresh with the restored file.";
                                         }
                                     }else{
                                         echo "-1";
                                     }
                                     die();
-                            /* end WPide restore code */ ?>';
+                            /* end Simple IDE restore code */ ?>';
 
         file_put_contents($backup_path_full,  $restore_php . file_get_contents($file_name));
       } else {
@@ -504,17 +505,17 @@ if (!class_exists('wpide')) :
     }
 
 
-    public function wpide_rename_file()
+    public function simple_ide_rename_file()
     {
       global $wp_filesystem;
 
       //check the user has the permissions
-      check_admin_referer('plugin-name-action_wpidenonce');
+      check_admin_referer('simple_ide_nonce');
       if (!current_user_can('manage_options')) {
         wp_die('<p>You do not have sufficient permissions to edit files for this site.</p>');
       }
 
-      $url     = wp_nonce_url('admin.php?page=wpide', 'plugin-name-action_wpidenonce');
+      $url     = wp_nonce_url('admin.php?page=simple_ide', 'simple_ide_nonce');
       $form_fields = null; // for now, but at some point the login info should be passed in here
       $creds     = request_filesystem_credentials($url, FS_METHOD, false, false, $form_fields);
       if (false === $creds) {
@@ -525,7 +526,7 @@ if (!class_exists('wpide')) :
         echo "Cannot initialise the WP file system API";
 
 
-      $root = apply_filters('wpide_filesystem_root', WP_CONTENT_DIR);
+      $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
       $file_name = $root . stripslashes($_POST['filename']);
       $new_name = dirname($file_name) . '/' . stripslashes($_POST['newname']);
 
@@ -549,17 +550,17 @@ if (!class_exists('wpide')) :
     }
 
 
-    public function wpide_delete_file()
+    public function simple_ide_delete_file()
     {
       global $wp_filesystem;
 
       //check the user has the permissions
-      check_admin_referer('plugin-name-action_wpidenonce');
+      check_admin_referer('simple_ide_nonce');
       if (!current_user_can('manage_options')) {
         wp_die('<p>You do not have sufficient permissions to edit files for this site.</p>');
       }
 
-      $url     = wp_nonce_url('admin.php?page=wpide', 'plugin-name-action_wpidenonce');
+      $url     = wp_nonce_url('admin.php?page=simple_ide', 'simple_ide_nonce');
       $form_fields = null; // for now, but at some point the login info should be passed in here
       $creds     = request_filesystem_credentials($url, FS_METHOD, false, false, $form_fields);
       if (false === $creds) {
@@ -570,7 +571,7 @@ if (!class_exists('wpide')) :
         echo "Cannot initialise the WP file system API";
 
 
-      $root = apply_filters('wpide_filesystem_root', WP_CONTENT_DIR);
+      $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
       $file_name = $root . stripslashes($_POST['filename']);
 
       if (!$wp_filesystem->exists($file_name)) {
@@ -587,17 +588,17 @@ if (!class_exists('wpide')) :
       exit;
     }
 
-    public function wpide_upload_file()
+    public function simple_ide_upload_file()
     {
       global $wp_filesystem;
 
       //check the user has the permissions
-      check_admin_referer('plugin-name-action_wpidenonce');
+      check_admin_referer('simple_ide_nonce');
       if (!current_user_can('manage_options')) {
         wp_die('<p>You do not have sufficient permissions to edit files for this site.</p>');
       }
 
-      $url     = wp_nonce_url('admin.php?page=wpide', 'plugin-name-action_wpidenonce');
+      $url     = wp_nonce_url('admin.php?page=simple_ide', 'simple_ide_nonce');
       $form_fields = null; // for now, but at some point the login info should be passed in here
       $creds     = request_filesystem_credentials($url, FS_METHOD, false, false, $form_fields);
       if (false === $creds) {
@@ -608,7 +609,7 @@ if (!class_exists('wpide')) :
         echo "Cannot initialise the WP file system API";
 
 
-      $root = apply_filters('wpide_filesystem_root', WP_CONTENT_DIR);
+      $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
       $destination_folder = $root . stripslashes($_POST['destination']);
 
       foreach ($_FILES as $file) {
@@ -633,17 +634,17 @@ if (!class_exists('wpide')) :
       exit;
     }
 
-    public function wpide_download_file()
+    public function simple_ide_download_file()
     {
       global $wp_filesystem;
 
       //check the user has the permissions
-      check_admin_referer('plugin-name-action_wpidenonce');
+      check_admin_referer('simple_ide_nonce');
       if (!current_user_can('manage_options')) {
         wp_die('<p>You do not have sufficient permissions to edit files for this site.</p>');
       }
 
-      $url     = wp_nonce_url('admin.php?page=wpide', 'plugin-name-action_wpidenonce');
+      $url     = wp_nonce_url('admin.php?page=simple_ide', 'simple_ide_nonce');
       $form_fields = null; // for now, but at some point the login info should be passed in here
       $creds     = request_filesystem_credentials($url, FS_METHOD, false, false, $form_fields);
       if (false === $creds) {
@@ -653,7 +654,7 @@ if (!class_exists('wpide')) :
       if (!WP_Filesystem($creds))
         echo "Cannot initialise the WP file system API";
 
-      $root    = apply_filters('wpide_filesystem_root', WP_CONTENT_DIR);
+      $root    = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
       $file_name  = $root . stripslashes($_POST['filename']);
 
       if (!$wp_filesystem->exists($file_name)) {
@@ -672,20 +673,20 @@ if (!class_exists('wpide')) :
       exit;
     }
 
-    public function wpide_zip_file()
+    public function simple_ide_zip_file()
     {
       global $wp_filesystem;
 
       //check the user has the permissions
-      check_admin_referer('plugin-name-action_wpidenonce');
+      check_admin_referer('simple_ide_nonce');
       if (!current_user_can('manage_options')) {
         wp_die('<p>You do not have sufficient permissions to edit files for this site.</p>');
       }
 
-      $root = apply_filters('wpide_filesystem_root', WP_CONTENT_DIR);
+      $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
       $file_name = $root . stripslashes($_POST['filename']);
 
-      $url     = wp_nonce_url('admin.php?page=wpide', 'plugin-name-action_wpidenonce');
+      $url     = wp_nonce_url('admin.php?page=simple_ide', 'simple_ide_nonce');
       $form_fields = null; // for now, but at some point the login info should be passed in here
       $creds     = request_filesystem_credentials($url, FS_METHOD, false, false, $form_fields);
       if (false === $creds) {
@@ -702,7 +703,7 @@ if (!class_exists('wpide')) :
       }
 
       $ext = '.zip';
-      switch (apply_filters('wpide_compression_method', 'zip')) {
+      switch (apply_filters('simple_ide_compression_method', 'zip')) {
         case 'gz':
           $ext = '.tar.gz';
           break;
@@ -740,7 +741,7 @@ if (!class_exists('wpide')) :
       // Unzip can use a lot of memory, but not this much hopefully
       @ini_set('memory_limit', apply_filters('admin_memory_limit', WP_MAX_MEMORY_LIMIT));
 
-      $method = apply_filters('wpide_compression_method', 'zip');
+      $method = apply_filters('simple_ide_compression_method', 'zip');
 
       switch ($method) {
         case 'gz':
@@ -919,20 +920,20 @@ if (!class_exists('wpide')) :
       return true;
     }
 
-    public function wpide_unzip_file()
+    public function simple_ide_unzip_file()
     {
       global $wp_filesystem;
 
       //check the user has the permissions
-      check_admin_referer('plugin-name-action_wpidenonce');
+      check_admin_referer('simple_ide_nonce');
       if (!current_user_can('manage_options')) {
         wp_die('<p>You do not have sufficient permissions to edit files for this site.</p>');
       }
 
-      $root = apply_filters('wpide_filesystem_root', WP_CONTENT_DIR);
+      $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
       $file_name = $root . stripslashes($_POST['filename']);
 
-      $url     = wp_nonce_url('admin.php?page=wpide', 'plugin-name-action_wpidenonce');
+      $url     = wp_nonce_url('admin.php?page=simple_ide', 'simple_ide_nonce');
       $form_fields = null; // for now, but at some point the login info should be passed in here
       $creds     = request_filesystem_credentials($url, FS_METHOD, false, false, $form_fields);
       if (false === $creds) {
@@ -981,7 +982,7 @@ if (!class_exists('wpide')) :
       }
     }
 
-    public function wpide_save_image()
+    public function simple_ide_save_image()
     {
       $filennonce = explode("::", $_POST["opt"]); //file::nonce
 
@@ -989,8 +990,8 @@ if (!class_exists('wpide')) :
       //we are checking two variations of the nonce, one as-is and another that we have removed a trailing zero from
       //this is to get around some sort of bug where a nonce generated on another page has a trailing zero and a nonce generated/checked here doesn't have the zero
       if (
-        !wp_verify_nonce($filennonce[1], 'wpide_image_edit' . $filennonce[0]) &&
-        !wp_verify_nonce(rtrim($filennonce[1], "0"), 'wpide_image_edit' . $filennonce[0])
+        !wp_verify_nonce($filennonce[1], 'simple_ide_image_edit' . $filennonce[0]) &&
+        !wp_verify_nonce(rtrim($filennonce[1], "0"), 'simple_ide_image_edit' . $filennonce[0])
       ) {
         die('Security check'); //die because both checks failed
       }
@@ -1005,7 +1006,7 @@ if (!class_exists('wpide')) :
 
       //setup wp_filesystem api
       global $wp_filesystem;
-      $url = wp_nonce_url('admin.php?page=wpide', 'plugin-name-action_wpidenonce');
+      $url = wp_nonce_url('admin.php?page=simple_ide', 'simple_ide_nonce');
       $form_fields = null; // for now, but at some point the login info should be passed in here
       if (false === ($creds = request_filesystem_credentials($url, FS_METHOD, false, false, $form_fields))) {
         // no credentials yet, just produced a form for the user to fill in
@@ -1015,7 +1016,7 @@ if (!class_exists('wpide')) :
         echo "Cannot initialise the WP file system API";
 
       //save a copy of the file and create a backup just in case
-      $root = apply_filters('wpide_filesystem_root', WP_CONTENT_DIR);
+      $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
       $file_name = $root . stripslashes($_POST['filename']);
 
       //set backup filename
@@ -1043,29 +1044,29 @@ if (!class_exists('wpide')) :
     }
 
 
-    public function wpide_startup_check()
+    public function simple_ide_startup_check()
     {
       global $wp_filesystem, $wp_version;
 
-      echo "\n\n\n\nWPIDE STARTUP CHECKS \n";
+      echo "\n\n\n\nSIMPLE_IDE STARTUP CHECKS \n";
       echo "___________________ \n\n";
 
       // WordPress version
       echo "WordPress version = " . $wp_version . "\n\n";
 
       //check the user has the permissions
-      check_admin_referer('plugin-name-action_wpidenonce');
+      check_admin_referer('simple_ide_nonce');
       if (!current_user_can('edit_themes'))
         wp_die('<p>' . __('You do not have sufficient permissions to edit templates for this site. SORRY') . '</p>');
 
-      if (defined('WPIDE_FS_METHOD_FORCED_ELSEWHERE')) {
-        echo "WordPress filesystem API has been forced to use the " . WPIDE_FS_METHOD_FORCED_ELSEWHERE . " method by another plugin/WordPress. \n\n";
+      if (defined('SIMPLE_IDE_FS_METHOD_FORCED_ELSEWHERE')) {
+        echo "WordPress filesystem API has been forced to use the " . SIMPLE_IDE_FS_METHOD_FORCED_ELSEWHERE . " method by another plugin/WordPress. \n\n";
       }
 
       //setup wp_filesystem api
-      $wpide_filesystem_before = $wp_filesystem;
+      $simple_ide_filesystem_before = $wp_filesystem;
 
-      $url = wp_nonce_url('admin.php?page=wpide', 'plugin-name-action_wpidenonce');
+      $url = wp_nonce_url('admin.php?page=simple_ide', 'simple_ide_nonce');
       $form_fields = null; // for now, but at some point the login info should be passed in here
       ob_start();
       if (false === ($creds = request_filesystem_credentials($url, FS_METHOD, false, false, $form_fields))) {
@@ -1078,13 +1079,13 @@ if (!class_exists('wpide')) :
       if (!WP_Filesystem($creds)) {
 
         echo "There has been a problem initialising the filesystem API \n\n";
-        echo "Filesystem API before this plugin ran: \n\n" . print_r($wpide_filesystem_before, true);
+        echo "Filesystem API before this plugin ran: \n\n" . print_r($simple_ide_filesystem_before, true);
         echo "Filesystem API now: \n\n" . print_r($wp_filesystem, true);
       }
-      unset($wpide_filesystem_before);
+      unset($simple_ide_filesystem_before);
 
 
-      $root = apply_filters('wpide_filesystem_root', WP_CONTENT_DIR);
+      $root = apply_filters('simple_ide_filesystem_root', WP_CONTENT_DIR);
       if (isset($wp_filesystem)) {
 
         //Running webservers user and group
@@ -1129,7 +1130,7 @@ if (!class_exists('wpide')) :
 
     public function add_my_menu_page()
     {
-      $this->menu_hook = add_menu_page('WPide', 'WPide', 'edit_themes', "wpide", array($this, 'my_menu_page'), 'dashicons-editor-code');
+      $this->menu_hook = add_menu_page('Simple IDE', 'Simple IDE', 'edit_themes', "simple_ide", array($this, 'my_menu_page'), 'dashicons-editor-code');
     }
 
     public function my_menu_page()
@@ -1143,11 +1144,11 @@ if (!class_exists('wpide')) :
 
     ?>
       <script>
-        var wpide_app_path = "<?php echo plugin_dir_url(__FILE__); ?>";
+        var simple_ide_app_path = "<?php echo plugin_dir_url(__FILE__); ?>";
         var user_nonce_addition = '';
 
         function the_filetree() {
-          jQuery('#wpide_file_browser').fileTree({
+          jQuery('#simple_ide_file_browser').fileTree({
             script: ajaxurl,
             expandSpeed: 250,
             collapseSpeed: 250,
@@ -1165,8 +1166,8 @@ if (!class_exists('wpide')) :
               jQuery("div.new_" + item.type + " input[name='new_" + item.type + "']").focus();
               jQuery("div.new_" + item.type + " input[name='new_" + item.type + "']").attr("rel", file);
 
-            } else if (jQuery(".wpide_tab[rel='" + file + "']").length > 0) { //focus existing tab
-              jQuery(".wpide_tab[sessionrel='" + jQuery(".wpide_tab[rel='" + file + "']").attr("sessionrel") + "']").click(); //focus the already open tab
+            } else if (jQuery(".simple_ide_tab[rel='" + file + "']").length > 0) { //focus existing tab
+              jQuery(".simple_ide_tab[sessionrel='" + jQuery(".simple_ide_tab[rel='" + file + "']").attr("sessionrel") + "']").click(); //focus the already open tab
             } else { //open file
 
               var image_pattern = new RegExp("(\\.jpg$|\\.gif$|\\.png$|\\.bmp$)");
@@ -1175,7 +1176,7 @@ if (!class_exists('wpide')) :
               } else {
                 jQuery(parent).addClass('wait');
 
-                wpide_set_file_contents(file, function() {
+                simple_ide_set_file_contents(file, function() {
                   //once file loaded remove the wait class/indicator
                   jQuery(parent).removeClass('wait');
                 });
@@ -1193,55 +1194,55 @@ if (!class_exists('wpide')) :
           the_filetree();
 
           //inialise the color assist
-          $("#wpide_color_assist img").ImageColorPicker({
+          $("#simple_ide_color_assist img").ImageColorPicker({
             afterColorSelected: function(event, color) {
-              jQuery("#wpide_color_assist_input").val(color);
+              jQuery("#simple_ide_color_assist_input").val(color);
             }
           });
-          $("#wpide_color_assist").hide(); //hide it until it's needed
+          $("#simple_ide_color_assist").hide(); //hide it until it's needed
 
-          $("#wpide_color_assist_send").click(function(e) {
+          $("#simple_ide_color_assist_send").click(function(e) {
             e.preventDefault();
-            editor.insert(jQuery("#wpide_color_assist_input").val().replace('#', ''));
+            editor.insert(jQuery("#simple_ide_color_assist_input").val().replace('#', ''));
 
-            $("#wpide_color_assist").hide(); //hide it until it's needed again
+            $("#simple_ide_color_assist").hide(); //hide it until it's needed again
           });
 
           $(".close-color-picker").click(function(e) {
             e.preventDefault();
-            $("#wpide_color_assist").hide(); //hide it until it's needed again
+            $("#simple_ide_color_assist").hide(); //hide it until it's needed again
           });
 
-          $("#wpide_toolbar_buttons").on('click', "a.restore", function(e) {
+          $("#simple_ide_toolbar_buttons").on('click', "a.restore", function(e) {
             e.preventDefault();
-            var file_path = jQuery(".wpide_tab.active", "#wpide_toolbar").data("backup");
+            var file_path = jQuery(".simple_ide_tab.active", "#simple_ide_toolbar").data("backup");
 
-            jQuery("#wpide_message").hide(); //might be shortly after a save so a message may be showing, which we don't need
-            jQuery("#wpide_message").html('<span><strong>File available for restore</strong><p> ' + file_path + '</p><a class="button red restore now" href="' + wpide_app_path + file_path + '">Restore this file now &#10012;</a><a class="button restore cancel" href="#">Cancel &#10007;</a><br /><em class="note"><strong>note: </strong>You can browse all file backups if you navigate to the backups folder (plugins/WPide/backups/..) using the filetree.</em></span>');
-            jQuery("#wpide_message").show();
+            jQuery("#simple_ide_message").hide(); //might be shortly after a save so a message may be showing, which we don't need
+            jQuery("#simple_ide_message").html('<span><strong>File available for restore</strong><p> ' + file_path + '</p><a class="button red restore now" href="' + simple_ide_app_path + file_path + '">Restore this file now &#10012;</a><a class="button restore cancel" href="#">Cancel &#10007;</a><br /><em class="note"><strong>note: </strong>You can browse all file backups if you navigate to the backups folder (plugins/Simple IDE/backups/..) using the filetree.</em></span>');
+            jQuery("#simple_ide_message").show();
           });
-          $("#wpide_toolbar_buttons").on('click', "a.restore.now", function(e) {
+          $("#simple_ide_toolbar_buttons").on('click', "a.restore.now", function(e) {
             e.preventDefault();
 
             var data = {
               restorewpnonce: user_nonce_addition + jQuery('#_wpnonce').val()
             };
-            jQuery.post(wpide_app_path + jQuery(".wpide_tab.active", "#wpide_toolbar").data("backup"), data, function(response) {
+            jQuery.post(simple_ide_app_path + jQuery(".simple_ide_tab.active", "#simple_ide_toolbar").data("backup"), data, function(response) {
 
               if (response == -1) {
                 alert("Problem restoring file.");
               } else {
                 alert(response);
-                jQuery("#wpide_message").hide();
+                jQuery("#simple_ide_message").hide();
               }
 
             });
 
           });
-          $("#wpide_toolbar_buttons").on('click', "a.cancel", function(e) {
+          $("#simple_ide_toolbar_buttons").on('click', "a.cancel", function(e) {
             e.preventDefault();
 
-            jQuery("#wpide_message").hide(); //might be shortly after a save so a message may be showing, which we don't need
+            jQuery("#simple_ide_message").hide(); //might be shortly after a save so a message may be showing, which we don't need
           });
 
         });
@@ -1250,9 +1251,9 @@ if (!class_exists('wpide')) :
       <div class="u-flex u-flex-col u-h-full u-bg-white">
 
         <div class="u-p-2 u-border-b u-border-gray-300 u-flex u-items-center">
-          <img class="u-h-6 u-w-auto" src="<?php echo plugins_url( 'images/wpide_logo.png', __FILE__ ); ?>" alt="">
+          <img class="u-h-6 u-w-auto" src="<?php echo plugins_url( 'images/simple_ide_logo.png', __FILE__ ); ?>" alt="">
 
-          <button type="button" class="wpide-settings button u-ml-auto u-flex u-items-center u-p-2">
+          <button type="button" class="simple-ide-settings button u-ml-auto u-flex u-items-center u-p-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="u-h-5 u-w-5 u-mr-2" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
             </svg>
@@ -1265,11 +1266,11 @@ if (!class_exists('wpide')) :
           <!-- sidebar -->
           <div class="u-bg-gray-100 u-flex u-flex-col u-flex-shrink-0 u-w-1/4 u-overflow-y-auto u-divide-y u-divide-gray-300">
 
-            <div id="wpide_info">
-              <div id="wpide_info_content" class="u-p-2"></div>
+            <div id="simple_ide_info">
+              <div id="simple_ide_info_content" class="u-p-2"></div>
             </div>
 
-            <div id="wpide_color_assist" class="u-relative">
+            <div id="simple_ide_color_assist" class="u-relative">
               <div class="u-border-b u-border-gray-300 u-text-xs u-font-bold u-px-2 u-py-1 u-flex u-items-center">
                 <span class="u-uppercase">Color Assist</span>
                 <a href="" class="close-color-picker u-ml-auto u-no-underline">
@@ -1279,22 +1280,22 @@ if (!class_exists('wpide')) :
                 </a>
               </div>
               <img src='<?php echo plugins_url("images/color-wheel.png", __FILE__); ?>' />
-              <input type="button" class="button" id="wpide_color_assist_send" value="&lt; Send to editor" />
-              <input type="text" id="wpide_color_assist_input" name="wpide_color_assist_input" value="" />
+              <input type="button" class="button" id="simple_ide_color_assist_send" value="&lt; Send to editor" />
+              <input type="text" id="simple_ide_color_assist_input" name="simple_ide_color_assist_input" value="" />
             </div>
 
-            <div id="wpide-filetree" class="u-relative">
+            <div id="simple-ide-filetree" class="u-relative">
               <div class="u-border-b u-border-gray-300 u-text-xs u-font-bold u-px-2 u-py-1 u-flex u-items-center">
                 <span class="u-uppercase">Files</span>
               </div>
-              <div id="wpide_file_browser"></div>
+              <div id="simple_ide_file_browser"></div>
               <div class="new_file new_item_inputs">
                 <label for="new_folder">File name</label><input class="has_data" name="new_file" type="text" rel="" value="" placeholder="filename.ext" />
-                <a href="#" id="wpide_create_new_file" class="button-primary">CREATE</a>
+                <a href="#" id="simple_ide_create_new_file" class="button-primary">CREATE</a>
               </div>
               <div class="new_directory new_item_inputs">
                 <label for="new_directory">Directory name</label><input class="has_data" name="new_directory" type="text" rel="" value="" placeholder="foldername" />
-                <a href="#" id="wpide_create_new_directory" class="button-primary">CREATE</a>
+                <a href="#" id="simple_ide_create_new_directory" class="button-primary">CREATE</a>
               </div>
             </div>
 
@@ -1302,17 +1303,17 @@ if (!class_exists('wpide')) :
 
           <div class="u-flex u-flex-col u-flex-grow u-min-w-0">
 
-            <div id="wpide_toolbar" class="u-relative u-bg-gray-100 u-flex u-border-b u-border-gray-300">
-              <div id="wpide_toolbar_tabs" class="u-flex-1 u-flex u-overflow-x-auto"></div>
+            <div id="simple_ide_toolbar" class="u-relative u-bg-gray-100 u-flex u-border-b u-border-gray-300">
+              <div id="simple_ide_toolbar_tabs" class="u-flex-1 u-flex u-overflow-x-auto"></div>
 
-              <div id="wpide_toolbar_buttons" style="display: none;">
+              <div id="simple_ide_toolbar_buttons" style="display: none;">
                 <div class="u-flex u-items-center u-justify-end">
-                  <div id="wpide_message" class="u-mr-4"></div>
+                  <div id="simple_ide_message" class="u-mr-4"></div>
 
                   <div class="u-flex u-items-center u-p-1 u-gap-1">
                     <a class="button restore" style="display:none;" title="Restore the active tab" href="#">Restore</a>
 
-                    <a href="#" id="wpide_save" title="Keyboard shortcut to save [Ctrl/Cmd + S]" class="button-primary u-flex u-items-center u-p-2">
+                    <a href="#" id="simple_ide_save" title="Keyboard shortcut to save [Ctrl/Cmd + S]" class="button-primary u-flex u-items-center u-p-2">
                       <svg xmlns="http://www.w3.org/2000/svg" class="u-h-5 u-w-5 u-mr-2" viewBox="0 0 20 20" fill="currentColor">
                         <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
                       </svg>
@@ -1323,7 +1324,7 @@ if (!class_exists('wpide')) :
                   <input type="hidden" id="filename" name="filename" value="" />
                   <?php
                   if (function_exists('wp_nonce_field'))
-                    wp_nonce_field('plugin-name-action_wpidenonce');
+                    wp_nonce_field('simple_ide_nonce');
                   ?>
                 </div>
               </div>
@@ -1331,10 +1332,10 @@ if (!class_exists('wpide')) :
 
             <div id="fancyeditordiv"></div>
 
-            <div id="wpide-statusbar" class="u-flex u-items-center u-px-2 u-h-6 u-border-t u-border-gray-300 u-text-xs u-text-gray-600">
-              <span id="wpide_footer_message"></span>
-              <span id="wpide_footer_message_last_saved"></span>
-              <span id="wpide_footer_message_unsaved" class="u-text-red-700"></span>
+            <div id="simple-ide-statusbar" class="u-flex u-items-center u-px-2 u-h-6 u-border-t u-border-gray-300 u-text-xs u-text-gray-600">
+              <span id="simple_ide_footer_message"></span>
+              <span id="simple_ide_footer_message_last_saved"></span>
+              <span id="simple_ide_footer_message_unsaved" class="u-text-red-700"></span>
             </div>
 
           </div>
@@ -1395,6 +1396,6 @@ if (!class_exists('wpide')) :
     }
   }
 
-  $wpide = new wpide();
+  $simple_ide = new Simple_IDE();
 
 endif; // class_exists check

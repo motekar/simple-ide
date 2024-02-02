@@ -3,4 +3,9 @@
 /.wordpress-org
 
 .distignore
+.prettierrc
 readme.md
+composer.json
+composer-lock.json
+package.json
+package-lock.json
