@@ -1,7 +1,7 @@
 <?php
 /*
 	Plugin Name: Simple IDE
-	Plugin URI: https://github.com/motekar/classic-wpide
+	Plugin URI: https://github.com/motekar/simple-ide
 	Description: WordPress code editor with auto-completion of both WordPress and PHP functions with reference, syntax highlighting, line numbers, tabbed editing, automatic backup.
 	Version: 1.0
 	Author: Motekar
@@ -103,29 +103,29 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			// setup jqueryFiletree list callback
 			add_action( 'wp_ajax_jqueryFileTree', array( $this, 'jqueryFileTree_get_list' ) );
 			// setup ajax function to get file contents for editing
-			add_action( 'wp_ajax_simple_ide_get_file', array( $this, 'simple_ide_get_file' ) );
+			add_action( 'wp_ajax_simple_ide_get_file', array( $this, 'get_file' ) );
 			// setup ajax function to save file contents and do automatic backup if needed
-			add_action( 'wp_ajax_simple_ide_save_file', array( $this, 'simple_ide_save_file' ) );
+			add_action( 'wp_ajax_simple_ide_save_file', array( $this, 'save_file' ) );
 			// setup ajax function to rename file/folder
-			add_action( 'wp_ajax_simple_ide_rename_file', array( $this, 'simple_ide_rename_file' ) );
+			add_action( 'wp_ajax_simple_ide_rename_file', array( $this, 'rename_file' ) );
 			// setup ajax function to delete file/folder
-			add_action( 'wp_ajax_simple_ide_delete_file', array( $this, 'simple_ide_delete_file' ) );
+			add_action( 'wp_ajax_simple_ide_delete_file', array( $this, 'delete_file' ) );
 			// setup ajax function to handle upload
-			add_action( 'wp_ajax_simple_ide_upload_file', array( $this, 'simple_ide_upload_file' ) );
+			add_action( 'wp_ajax_simple_ide_upload_file', array( $this, 'upload_file' ) );
 			// setup ajax function to handle download
-			add_action( 'wp_ajax_simple_ide_download_file', array( $this, 'simple_ide_download_file' ) );
+			add_action( 'wp_ajax_simple_ide_download_file', array( $this, 'download_file' ) );
 			// setup ajax function to unzip file
-			add_action( 'wp_ajax_simple_ide_unzip_file', array( $this, 'simple_ide_unzip_file' ) );
+			add_action( 'wp_ajax_simple_ide_unzip_file', array( $this, 'unzip_file' ) );
 			// setup ajax function to zip file
-			add_action( 'wp_ajax_simple_ide_zip_file', array( $this, 'simple_ide_zip_file' ) );
+			add_action( 'wp_ajax_simple_ide_zip_file', array( $this, 'zip_file' ) );
 			// setup ajax function to create new item (folder, file etc)
-			add_action( 'wp_ajax_simple_ide_create_new', array( $this, 'simple_ide_create_new' ) );
+			add_action( 'wp_ajax_simple_ide_create_new', array( $this, 'create_new' ) );
 
 			// setup ajax function to create new item (folder, file etc)
-			add_action( 'wp_ajax_simple_ide_image_edit_key', array( $this, 'simple_ide_image_edit_key' ) );
+			add_action( 'wp_ajax_simple_ide_image_edit_key', array( $this, 'image_edit_key' ) );
 
 			// setup ajax function for startup to get some debug info, checking permissions etc
-			add_action( 'wp_ajax_simple_ide_startup_check', array( $this, 'simple_ide_startup_check' ) );
+			add_action( 'wp_ajax_simple_ide_startup_check', array( $this, 'startup_check' ) );
 
 			// add a warning when navigating away from Simple IDE
 			// it has to go after WordPress scripts otherwise WP clears the binding
@@ -220,14 +220,11 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 
 		public function add_admin_styles() {
 			// main Simple IDE styles
-			wp_register_style( 'simple_ide_style', plugins_url( 'css/simple-ide.min.css', __FILE__ ), array( 'wp-jquery-ui-dialog' ) );
-			wp_enqueue_style( 'simple_ide_style' );
+			wp_enqueue_style( 'simple-ide-style', plugins_url( 'css/simple-ide.min.css', __FILE__ ), array( 'wp-jquery-ui-dialog' ) );
 			// filetree styles
-			wp_register_style( 'simple_ide_filetree_style', plugins_url( 'css/jqueryFileTree.css', __FILE__ ) );
-			wp_enqueue_style( 'simple_ide_filetree_style' );
+			wp_enqueue_style( 'simple-ide-filetree-style', plugins_url( 'css/jqueryFileTree.css', __FILE__ ) );
 			// autocomplete dropdown styles
-			wp_register_style( 'simple_ide_dd_style', plugins_url( 'css/dd.css', __FILE__ ) );
-			wp_enqueue_style( 'simple_ide_dd_style' );
+			wp_enqueue_style( 'simple-ide-dd-style', plugins_url( 'css/dd.css', __FILE__ ) );
 		}
 
 		public function jqueryFileTree_get_list() {
@@ -296,7 +293,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 		}
 
 
-		public function simple_ide_get_file() {
+		public function get_file() {
 			// check the user has the permissions
 			check_admin_referer( 'simple_ide_nonce' );
 			if ( ! current_user_can( 'edit_themes' ) ) {
@@ -316,12 +313,12 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			}
 
 			$root      = apply_filters( 'simple_ide_filesystem_root', WP_CONTENT_DIR );
-			$file_name = $root . stripslashes( $_POST['filename'] );
+			$file_name = $root . sanitize_text_field( $_POST['filename'] );
 			echo $wp_filesystem->get_contents( $file_name );
 			die(); // this is required to return a proper result
 		}
 
-		public function simple_ide_image_edit_key() {
+		public function image_edit_key() {
 
 			// check the user has the permissions
 			check_admin_referer( 'simple_ide_nonce' );
@@ -333,7 +330,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			echo wp_create_nonce( 'simple_ide_image_edit' . $_POST['file'] );
 		}
 
-		public function simple_ide_create_new() {
+		public function create_new() {
 			// check the user has the permissions
 			check_admin_referer( 'simple_ide_nonce' );
 			if ( ! current_user_can( 'edit_themes' ) ) {
@@ -371,7 +368,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 					if ( $write_result ) {
 						die( '1' ); // created
 					} else {
-						echo 'Problem creating directory' . $root . $path . $filename;
+						echo wp_kses_post( 'Problem creating directory' . $root . $path . $filename );
 					}
 				} elseif ( $_POST['type'] == 'file' ) {
 					// write the file
@@ -384,7 +381,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 					if ( $write_result ) {
 						die( '1' ); // created
 					} else {
-						echo 'Problem creating file ' . $root . $path . $filename;
+						echo wp_kses_post( 'Problem creating file ' . $root . $path . $filename );
 					}
 				}
 				// print_r($_POST);
@@ -394,14 +391,17 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			die(); // this is required to return a proper result
 		}
 
-		public function simple_ide_save_file() {
+		public function save_file() {
 			// check the user has the permissions
 			check_admin_referer( 'simple_ide_nonce' );
 			if ( ! current_user_can( 'edit_themes' ) ) {
 				wp_die( '<p>You do not have sufficient permissions to edit files for this site.</p>' );
 			}
 
-			$is_php = false;
+			$is_php  = false;
+
+			// base64 required to make sure the content not blocked by WAF
+			$content = base64_decode( sanitize_textarea_field( $_POST['content'] ) );
 
 			/*
 			* Check file syntax of PHP files by parsing the PHP
@@ -416,7 +416,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 
 				ini_set( 'xdebug.max_nesting_level', 2000 );
 
-				$code = stripslashes( $_POST['content'] );
+				$code = stripslashes( $content );
 
 				$parser = ( new \PhpParser\ParserFactory() )->create( \PhpParser\ParserFactory::PREFER_PHP7 );
 
@@ -442,7 +442,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 
 			// save a copy of the file and create a backup just in case
 			$root      = apply_filters( 'simple_ide_filesystem_root', WP_CONTENT_DIR );
-			$file_name = $root . stripslashes( $_POST['filename'] );
+			$file_name = $root . sanitize_text_field( $_POST['filename'] );
 
 			// set backup filename
 			$backup_path      = 'backups' . preg_replace( '#\.php$#i', '_' . date( 'Y-m-d-H' ) . '.php', $_POST['filename'] );
@@ -477,7 +477,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			}
 
 			// save file
-			if ( $wp_filesystem->put_contents( $file_name, stripslashes( $_POST['content'] ) ) ) {
+			if ( $wp_filesystem->put_contents( $file_name, $content ) ) {
 
 				// lets create an extra long nonce to make it less crackable
 				global $current_user;
@@ -491,7 +491,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 		}
 
 
-		public function simple_ide_rename_file() {
+		public function rename_file() {
 			global $wp_filesystem;
 
 			// check the user has the permissions
@@ -512,7 +512,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			}
 
 			$root      = apply_filters( 'simple_ide_filesystem_root', WP_CONTENT_DIR );
-			$file_name = $root . stripslashes( $_POST['filename'] );
+			$file_name = $root . sanitize_text_field( $_POST['filename'] );
 			$new_name  = dirname( $file_name ) . '/' . stripslashes( $_POST['newname'] );
 
 			if ( ! $wp_filesystem->exists( $file_name ) ) {
@@ -535,7 +535,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 		}
 
 
-		public function simple_ide_delete_file() {
+		public function delete_file() {
 			global $wp_filesystem;
 
 			// check the user has the permissions
@@ -556,7 +556,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			}
 
 			$root      = apply_filters( 'simple_ide_filesystem_root', WP_CONTENT_DIR );
-			$file_name = $root . stripslashes( $_POST['filename'] );
+			$file_name = $root . sanitize_text_field( $_POST['filename'] );
 
 			if ( ! $wp_filesystem->exists( $file_name ) ) {
 				echo 'The file doesn\'t exist!';
@@ -572,7 +572,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			exit;
 		}
 
-		public function simple_ide_upload_file() {
+		public function upload_file() {
 			global $wp_filesystem;
 
 			// check the user has the permissions
@@ -617,7 +617,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			exit;
 		}
 
-		public function simple_ide_download_file() {
+		public function download_file() {
 			global $wp_filesystem;
 
 			// check the user has the permissions
@@ -638,7 +638,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			}
 
 			$root      = apply_filters( 'simple_ide_filesystem_root', WP_CONTENT_DIR );
-			$file_name = $root . stripslashes( $_POST['filename'] );
+			$file_name = $root . sanitize_text_field( $_POST['filename'] );
 
 			if ( ! $wp_filesystem->exists( $file_name ) ) {
 				echo 'The file doesn\'t exist!';
@@ -656,7 +656,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			exit;
 		}
 
-		public function simple_ide_zip_file() {
+		public function zip_file() {
 			global $wp_filesystem;
 
 			// check the user has the permissions
@@ -666,7 +666,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			}
 
 			$root      = apply_filters( 'simple_ide_filesystem_root', WP_CONTENT_DIR );
-			$file_name = $root . stripslashes( $_POST['filename'] );
+			$file_name = $root . sanitize_text_field( $_POST['filename'] );
 
 			$url         = wp_nonce_url( 'admin.php?page=simple_ide', 'simple_ide_nonce' );
 			$form_fields = null; // for now, but at some point the login info should be passed in here
@@ -901,7 +901,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			return true;
 		}
 
-		public function simple_ide_unzip_file() {
+		public function unzip_file() {
 			global $wp_filesystem;
 
 			// check the user has the permissions
@@ -911,7 +911,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			}
 
 			$root      = apply_filters( 'simple_ide_filesystem_root', WP_CONTENT_DIR );
-			$file_name = $root . stripslashes( $_POST['filename'] );
+			$file_name = $root . sanitize_text_field( $_POST['filename'] );
 
 			$url         = wp_nonce_url( 'admin.php?page=simple_ide', 'simple_ide_nonce' );
 			$form_fields = null; // for now, but at some point the login info should be passed in here
@@ -995,7 +995,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 
 			// save a copy of the file and create a backup just in case
 			$root      = apply_filters( 'simple_ide_filesystem_root', WP_CONTENT_DIR );
-			$file_name = $root . stripslashes( $_POST['filename'] );
+			$file_name = $root . sanitize_text_field( $_POST['filename'] );
 
 			// set backup filename
 			$backup_path = 'backups' . preg_replace( '#\.php$#i', '_' . date( 'Y-m-d-H' ) . '.php', $_POST['filename'] );
@@ -1024,10 +1024,10 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 		}
 
 
-		public function simple_ide_startup_check() {
+		public function startup_check() {
 			global $wp_filesystem, $wp_version;
 
-			echo "\n\n\n\nSIMPLE_IDE STARTUP CHECKS \n";
+			echo "\n\n\n\nSIMPLE IDE STARTUP CHECKS \n";
 			echo "___________________ \n\n";
 
 			// WordPress version
@@ -1124,22 +1124,21 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 
 		function the_filetree() {
 			jQuery('#simple_ide_file_browser').fileTree({
-			script: ajaxurl,
-			expandSpeed: 250,
-			collapseSpeed: 250,
+			script: ajaxurl
 			}, function(parent, file) {
-
-			jQuery(".new_item_inputs").hide();
 
 			if (jQuery(parent).hasClass("create_new")) { //create new file/folder
 				//to create a new item we need to know the name of it so show input
 
 				var item = eval('(' + file + ')');
 
+				//hide all inputs just incase one is selected
+				jQuery(".new_item_inputs").hide();
 				//show the input form for this
 				jQuery("div.new_" + item.type).show();
 				jQuery("div.new_" + item.type + " input[name='new_" + item.type + "']").focus();
 				jQuery("div.new_" + item.type + " input[name='new_" + item.type + "']").attr("rel", file);
+
 
 			} else if (jQuery(".simple_ide_tab[rel='" + file + "']").length > 0) { //focus existing tab
 				jQuery(".simple_ide_tab[sessionrel='" + jQuery(".simple_ide_tab[rel='" + file + "']").attr("sessionrel") + "']").click(); //focus the already open tab
@@ -1147,13 +1146,59 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 
 				var image_pattern = new RegExp("(\\.jpg$|\\.gif$|\\.png$|\\.bmp$)");
 				if (image_pattern.test(file)) {
-				// TODO: open image tab
+				//it's an image so open it for editing
+
+				//using modal+iframe
+				if ("lets not" == "use the modal for now") {
+
+					var NewDialog = jQuery('<div id="MenuDialog">\
+							<iframe src="http://www.sumopaint.com/app/?key=ebcdaezjeojbfgih&target=<?php echo get_bloginfo( 'url' ) . '?action=simple_ide_image_save'; ?>&url=<?php echo get_bloginfo( 'url' ) . '/wp-content'; ?>' + file + '&title=Edit image&service=Save back to Simple IDE" width="100%" height="600px"> </iframe>\
+							</div>');
+					NewDialog.dialog({
+					modal: true,
+					title: "title",
+					show: 'clip',
+					hide: 'clip',
+					width: '800',
+					height: '600'
+					});
+
+				} else { //open in new tab/window
+
+					var data = {
+					action: 'simple_ide_image_edit_key',
+					file: file,
+					_wpnonce: jQuery('#_wpnonce').val(),
+					_wp_http_referer: jQuery('#_wp_http_referer').val()
+					};
+					var image_data = '';
+					jQuery.ajaxSetup({
+					async: false
+					}); //we need to wait until we get the response before opening the window
+					jQuery.post(ajaxurl, data, function(response) {
+
+					//with the response (which is a nonce), build the json data to pass to the image editor. The edit key (nonce) is only valid to edit this image
+					image_data = file + '::' + response;
+
+					});
+
+					jQuery.ajaxSetup({
+					async: true
+					}); //enable async again
+
+
+					window.open('http://www.sumopaint.com/app/?key=ebcdaezjeojbfgih&url=<?php echo $app_url . '/wp-content'; ?>' + file + '&opt=' + image_data + '&title=Edit image&service=Save back to Simple IDE&target=<?php echo urlencode( $app_url . '/wp-admin/admin.php?simple_ide_save_image=yes' ); ?>');
+
+				}
+
 				} else {
 				jQuery(parent).addClass('wait');
 
 				simple_ide_set_file_contents(file, function() {
+
 					//once file loaded remove the wait class/indicator
 					jQuery(parent).removeClass('wait');
+
 				});
 
 				jQuery('#filename').val(file);
@@ -1164,7 +1209,12 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			});
 		}
 
+
+
 		jQuery(document).ready(function($) {
+
+			//                $("#fancyeditordiv").css("height", ($('body').height()-120) + 'px' );
+
 			// Handler for .ready() called.
 			the_filetree();
 
@@ -1183,7 +1233,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			$("#simple_ide_color_assist").hide(); //hide it until it's needed again
 			});
 
-			$(".close-color-picker").click(function(e) {
+			$(".close_color_picker a").click(function(e) {
 			e.preventDefault();
 			$("#simple_ide_color_assist").hide(); //hide it until it's needed again
 			});
@@ -1193,7 +1243,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			var file_path = jQuery(".simple_ide_tab.active", "#simple_ide_toolbar").data("backup");
 
 			jQuery("#simple_ide_message").hide(); //might be shortly after a save so a message may be showing, which we don't need
-			jQuery("#simple_ide_message").html('<span><strong>File available for restore</strong><p> ' + file_path + '</p><a class="button red restore now" href="' + simple_ide_app_path + file_path + '">Restore this file now &#10012;</a><a class="button restore cancel" href="#">Cancel &#10007;</a><br /><em class="note"><strong>note: </strong>You can browse all file backups if you navigate to the backups folder (plugins/Simple IDE/backups/..) using the filetree.</em></span>');
+			jQuery("#simple_ide_message").html('<span><strong>File available for restore</strong><p> ' + file_path + '</p><a class="button red restore now" href="' + simple_ide_app_path + file_path + '">Restore this file now &#10012;</a><a class="button restore cancel" href="#">Cancel &#10007;</a><br /><em class="note"><strong>note: </strong>You can browse all file backups if you navigate to the backups folder (plugins/simple-ide/backups/..) using the filetree.</em></span>');
 			jQuery("#simple_ide_message").show();
 			});
 			$("#simple_ide_toolbar_buttons").on('click', "a.restore.now", function(e) {

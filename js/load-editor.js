@@ -697,7 +697,8 @@ function saveDocument(ev) {
     filename: jQuery('input[name=filename]').val(),
     _wpnonce: jQuery('#_wpnonce').val(),
     _wp_http_referer: jQuery('#_wp_http_referer').val(),
-    content: editor.getSession().getValue(),
+    // content need to be encoded to make sure its not blocked by WAF
+    content: btoa(editor.getSession().getValue()),
   };
   jQuery.post(ajaxurl, data, function (response) {
     var regexchk = /\".*:::.*\"/;
