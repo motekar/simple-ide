@@ -3,12 +3,12 @@ function display_context_menu(e) {
   e.stopPropagation();
 
   var $this = jQuery(this),
-    $parent = $this.parent();
-  (left = e.offsetX),
-    (is_file = $parent.hasClass('file')),
-    (is_dir = $parent.hasClass('directory')),
-    (is_zip = $parent.hasClass('ext_zip')),
-    (is_editable =
+    $parent = $this.parent(),
+    left = e.offsetX,
+    is_file = $parent.hasClass('file'),
+    is_dir = $parent.hasClass('directory'),
+    is_zip = $parent.hasClass('ext_zip'),
+    is_editable =
       is_file &&
       ($parent.hasClass('ext_afp') ||
         $parent.hasClass('ext_afpa') ||
@@ -36,7 +36,7 @@ function display_context_menu(e) {
         $parent.hasClass('ext_txt') ||
         $parent.hasClass('ext_vb') ||
         $parent.hasClass('ext_xml') ||
-        $parent.hasClass('ext_error_log')));
+        $parent.hasClass('ext_error_log'));
 
   left += parseInt($parent.css('paddingLeft'), 10);
 
