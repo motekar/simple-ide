@@ -849,7 +849,9 @@ function load_editor_settings() {
   }
 }
 
-function display_editor_settings() {
+function display_editor_settings(ev) {
+  ev.preventDefault();
+
   // Create HTML dialog
   if (!jQuery('#editor_settings_dialog').length) {
     // Ensure settings are loaded...

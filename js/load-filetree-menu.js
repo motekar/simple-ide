@@ -41,7 +41,7 @@ function display_context_menu(e) {
   left += parseInt($parent.css('paddingLeft'), 10);
 
   // Create menu
-  var $menu = jQuery("<ul class='simple-ide-context-menu'>").css({
+  var $menu = jQuery("<ul class='simple-ide__context-menu'>").css({
     left: left + 'px',
     top: e.offsetY + 'px',
   });
@@ -160,13 +160,13 @@ function display_context_menu(e) {
   function exit_menu(e) {
     var src_element = e.target || e.srcElement;
 
-    if (!jQuery(src_element).closest('.simple-ide-context-menu').get().length)
+    if (!jQuery(src_element).closest('.simple-ide__context-menu').get().length)
       destroy_menu();
   }
   function exit_menu_onclick(e) {
     var src_element = e.target || e.srcElement;
 
-    if (!jQuery(src_element).hasClass('simple-ide-context-menu'))
+    if (!jQuery(src_element).hasClass('simple-ide__context-menu'))
       destroy_menu();
   }
   function exit_menu_onblur() {

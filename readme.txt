@@ -1,7 +1,7 @@
 === Simple IDE ===
 Contributors: motekar
-Tags: theme editor, plugin editor, code editor, file editor, file manager, wpide, ide, classicpress
-Stable tag: 2.7
+Tags: theme editor, plugin editor, code editor, file editor, file manager, ide, classicpress
+Stable tag: 1.0
 Requires PHP: 5.5
 Requires at least: 4.9
 Tested up to: 6.0
@@ -24,7 +24,7 @@ This plugin would not be possible without the <a href="http://ace.ajax.org/">Aja
 *   Find+replace
 *   Code autocomplete for WordPress and PHP functions along with function description, arguments and return value where applicable
 *   Colour assist - a colour picker that only shows once you double click a hex colour code in the editor. You can also drag your own image into the colour picker to use instead of the default swatch (see other notes for info).
-*   Automatic backup of every file you edit. (one daily backup and one hourly backup of each file stored in plugins/Simple IDE/backups/filepath)
+*   Automatic backup of every file you edit. (one daily backup and one hourly backup of each file stored in wp-content/backups/simple-ide/filepath)
 *   File tree allowing you to access and edit any file in your wp-content folder (plugins, themes, uploads etc)
 *   Use the file browser to rename, delete, download, zip and unzip files (so you can download a zipped version of your whole theme for example)
 *   Create new files and directories
@@ -46,7 +46,7 @@ Icon based on <a href="https://thenounproject.com/search/?q=code&i=909303">code<
 
 == Installation ==
 
-1. Upload the Simple IDE folder to the `/wp-content/plugins/` directory
+1. Upload the `simple-ide` folder to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Access Simple IDE by clicking the Simple IDE menu item in your main administration menu
 
@@ -60,7 +60,7 @@ Every file that you edit is backed up before your first save to the filesystem a
 
 As you edit or more specifically save PHP files the restore button will display which will allow you to restore the most recent backup.
 
-If your WordPress install is fully functional then you can use the file tree to browse all of your backed up files (plugins/Simple IDE/backups..), if your WordPress install isn't responding then restoring the file using the restore button or directly via FTP/SSH is the only way.
+If your WordPress install is fully functional then you can use the file tree to browse all of your backed up files (wp-content/backups/simple-ide/...), if your WordPress install isn't responding then restoring the file using the restore button or directly via FTP/SSH is the only way.
 
 The backed up PHP files cannot be accessed/restored from the web directly without the 40 digit nonce/key so should not pose a security concern.
 
