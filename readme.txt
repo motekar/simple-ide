@@ -12,7 +12,7 @@ Code editor, file editor & file manager with auto-complete for WP & PHP function
 
 == Description ==
 
-Simple IDE is a fork of WPide 2.6. It is a WordPress code editor and file editor with automatic backups. You can edit any files in your wp-content folder, not just plugins and themes. Code completion will help you remember your WordPress/PHP commands providing function reference along the way. Edit multiple files with the tabbed editor.
+Simple IDE is a WordPress code editor and file editor with automatic backups. You can edit any files in your wp-content folder, not just plugins and themes. Code completion will help you remember your WordPress/PHP commands providing function reference along the way. Edit multiple files with the tabbed editor.
 
 This plugin would not be possible without the <a href="http://ace.ajax.org/">Ajax.org Cloud9 Editor</a> which is the embedded code editor that powers much of the functionality.
 
@@ -24,7 +24,7 @@ This plugin would not be possible without the <a href="http://ace.ajax.org/">Aja
 *   Find+replace
 *   Code autocomplete for WordPress and PHP functions along with function description, arguments and return value where applicable
 *   Colour assist - a colour picker that only shows once you double click a hex colour code in the editor. You can also drag your own image into the colour picker to use instead of the default swatch (see other notes for info).
-*   Automatic backup of every file you edit. (one daily backup and one hourly backup of each file stored in plugins/simple-ide/backups/filepath)
+*   Automatic backup of every file you edit. (one daily backup and one hourly backup of each file stored in wp-content/backups/simple-ide/filepath)
 *   File tree allowing you to access and edit any file in your wp-content folder (plugins, themes, uploads etc)
 *   Use the file browser to rename, delete, download, zip and unzip files (so you can download a zipped version of your whole theme for example)
 *   Create new files and directories
@@ -60,7 +60,7 @@ Every file that you edit is backed up before your first save to the filesystem a
 
 As you edit or more specifically save PHP files the restore button will display which will allow you to restore the most recent backup.
 
-If your WordPress install is fully functional then you can use the file tree to browse all of your backed up files (plugins/simple-ide/backups..), if your WordPress install isn't responding then restoring the file using the restore button or directly via FTP/SSH is the only way.
+If your WordPress install is fully functional then you can use the file tree to browse all of your backed up files (wp-content/backups/simple-ide/...), if your WordPress install isn't responding then restoring the file using the restore button or directly via FTP/SSH is the only way.
 
 The backed up PHP files cannot be accessed/restored from the web directly without the 40 digit nonce/key so should not pose a security concern.
 
@@ -107,4 +107,3 @@ The default colour picker has limited colours. You can replace this image with a
 Using this you can either create your own swatch of colours or just drag in your websites logo or header image.
 
 If you close the editor any custom colour picker image will be forgotten. We maybe thing about making this persist and also make the image uploadable as well as drag+drop.
-
