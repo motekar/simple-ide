@@ -193,7 +193,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			// include file tree
 			wp_enqueue_script( 'jquery-file-tree', plugins_url( 'js/jqueryFileTree.js', __FILE__ ) );
 
-			$ace_version = '1.5.0';
+			$ace_version = '1.32.5';
 			// include ace
 			wp_enqueue_script( 'ace', plugins_url( "js/ace-$ace_version/ace.js", __FILE__ ) );
 			// include ace modes for css, javascript & php
