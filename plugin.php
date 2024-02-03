@@ -202,15 +202,17 @@ if (!class_exists('Simple_IDE')) :
       $plugin_path =  plugin_dir_url(__FILE__);
       //include file tree
       wp_enqueue_script('jquery-file-tree', plugins_url("js/jqueryFileTree.js", __FILE__));
+
+      $ace_version = '1.32.5';
       //include ace
-      wp_enqueue_script('ace', plugins_url("js/ace-1.5.0/ace.js", __FILE__));
+      wp_enqueue_script('ace', plugins_url("js/ace-$ace_version/ace.js", __FILE__));
       //include ace modes for css, javascript & php
-      wp_enqueue_script('ace-mode-css', $plugin_path . 'js/ace-1.5.0/mode-css.js');
-      wp_enqueue_script('ace-mode-less', $plugin_path . 'js/ace-1.5.0/mode-less.js');
-      wp_enqueue_script('ace-mode-javascript', $plugin_path . 'js/ace-1.5.0/mode-javascript.js');
-      wp_enqueue_script('ace-mode-php', $plugin_path . 'js/ace-1.5.0/mode-php.js');
+      wp_enqueue_script('ace-mode-css', $plugin_path . "js/ace-$ace_version/mode-css.js");
+      wp_enqueue_script('ace-mode-less', $plugin_path . "js/ace-$ace_version/mode-less.js");
+      wp_enqueue_script('ace-mode-javascript', $plugin_path . "js/ace-$ace_version/mode-javascript.js");
+      wp_enqueue_script('ace-mode-php', $plugin_path . "js/ace-$ace_version/mode-php.js");
       //include ace theme
-      wp_enqueue_script('ace-theme', plugins_url("js/ace-1.5.0/theme-dawn.js", __FILE__)); //ambiance looks really nice for high contrast
+      wp_enqueue_script('ace-theme', plugins_url("js/ace-$ace_version/theme-dawn.js", __FILE__)); //ambiance looks really nice for high contrast
       // wordpress-completion tags
       wp_enqueue_script('simple-ide-wordpress-completion', plugins_url("js/autocomplete/wordpress.js", __FILE__));
       // php-completion tags
