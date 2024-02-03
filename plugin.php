@@ -192,15 +192,17 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			$plugin_path = plugin_dir_url( __FILE__ );
 			// include file tree
 			wp_enqueue_script( 'jquery-file-tree', plugins_url( 'js/jqueryFileTree.js', __FILE__ ) );
+
+			$ace_version = '1.5.0';
 			// include ace
-			wp_enqueue_script( 'ace', plugins_url( 'js/ace-1.5.0/ace.js', __FILE__ ) );
+			wp_enqueue_script( 'ace', plugins_url( "js/ace-$ace_version/ace.js", __FILE__ ) );
 			// include ace modes for css, javascript & php
-			wp_enqueue_script( 'ace-mode-css', $plugin_path . 'js/ace-1.5.0/mode-css.js' );
-			wp_enqueue_script( 'ace-mode-less', $plugin_path . 'js/ace-1.5.0/mode-less.js' );
-			wp_enqueue_script( 'ace-mode-javascript', $plugin_path . 'js/ace-1.5.0/mode-javascript.js' );
-			wp_enqueue_script( 'ace-mode-php', $plugin_path . 'js/ace-1.5.0/mode-php.js' );
+			wp_enqueue_script( 'ace-mode-css', $plugin_path . "js/ace-$ace_version/mode-css.js" );
+			wp_enqueue_script( 'ace-mode-less', $plugin_path . "js/ace-$ace_version/mode-less.js" );
+			wp_enqueue_script( 'ace-mode-javascript', $plugin_path . "js/ace-$ace_version/mode-javascript.js" );
+			wp_enqueue_script( 'ace-mode-php', $plugin_path . "js/ace-$ace_version/mode-php.js" );
 			// include ace theme
-			wp_enqueue_script( 'ace-theme', plugins_url( 'js/ace-1.5.0/theme-dawn.js', __FILE__ ) ); // ambiance looks really nice for high contrast
+			wp_enqueue_script( 'ace-theme', plugins_url( "js/ace-$ace_version/theme-dawn.js", __FILE__ ) ); // ambiance looks really nice for high contrast
 			// wordpress-completion tags
 			wp_enqueue_script( 'simple-ide-wordpress-completion', plugins_url( 'js/autocomplete/wordpress.js', __FILE__ ) );
 			// php-completion tags
@@ -218,7 +220,7 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 
 		public function add_admin_styles() {
 			// main Simple IDE styles
-			wp_enqueue_style( 'simple-ide-style', plugins_url( 'css/simple-ide.css', __FILE__ ), array( 'wp-jquery-ui-dialog' ) );
+			wp_enqueue_style( 'simple-ide-style', plugins_url( 'css/simple-ide.min.css', __FILE__ ), array( 'wp-jquery-ui-dialog' ) );
 			// filetree styles
 			wp_enqueue_style( 'simple-ide-filetree-style', plugins_url( 'css/jqueryFileTree.css', __FILE__ ) );
 			// autocomplete dropdown styles
@@ -397,6 +399,8 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 			}
 
 			$is_php  = false;
+
+			// base64 required to make sure the content not blocked by WAF
 			$content = base64_decode( sanitize_textarea_field( $_POST['content'] ) );
 
 			/*
@@ -1269,81 +1273,98 @@ if ( ! class_exists( 'Simple_IDE' ) ) :
 		});
 		</script>
 
-		<div id="poststuff" class="metabox-holder has-right-sidebar">
+		<div class="u-flex u-flex-col u-h-full u-bg-white">
 
-		<div id="side-info-column" class="inner-sidebar">
+		<div class="u-p-2 u-border-b u-border-gray-300 u-flex u-items-center">
+			<img class="u-h-6 u-w-auto" src="<?php echo plugins_url( 'images/simple-ide-logo.png', __FILE__ ); ?>" alt="">
 
-			<div id="simple_ide_info">
-			<div id="simple_ide_info_content"></div>
-			</div>
-			<br style="clear:both;" />
-			<div id="simple_ide_color_assist">
-			<div class="close_color_picker"><a href="close-color-picker">x</a></div>
-			<h3>Colour Assist</h3>
-			<img src='<?php echo plugins_url( 'images/color-wheel.png', __FILE__ ); ?>' />
-			<input type="button" class="button" id="simple_ide_color_assist_send" value="&lt; Send to editor" />
-			<input type="text" id="simple_ide_color_assist_input" name="simple_ide_color_assist_input" value="" />
-
-			</div>
-
-
-
-			<div id="submitdiv" class="postbox ">
-			<h3 class="hndle"><span>Files</span></h3>
-			<div class="inside">
-				<div class="submitbox" id="submitpost">
-				<div id="minor-publishing">
-				</div>
-				<div id="major-publishing-actions">
-					<div id="simple_ide_file_browser"></div>
-					<br style="clear:both;" />
-					<div class="new_file new_item_inputs">
-					<label for="new_folder">File name</label><input class="has_data" name="new_file" type="text" rel="" value="" placeholder="Filename.ext" />
-					<a href="#" id="simple_ide_create_new_file" class="button-primary">CREATE</a>
-					</div>
-					<div class="new_directory new_item_inputs">
-					<label for="new_directory">Directory name</label><input class="has_data" name="new_directory" type="text" rel="" value="" placeholder="Filename.ext" />
-					<a href="#" id="simple_ide_create_new_directory" class="button-primary">CREATE</a>
-					</div>
-					<div class="clear"></div>
-				</div>
-				</div>
-			</div>
-			</div>
-
-
+			<button type="button" class="simple-ide-settings button u-ml-auto u-flex u-items-center u-p-2">
+			<svg xmlns="http://www.w3.org/2000/svg" class="u-h-5 u-w-5 u-mr-2" viewBox="0 0 20 20" fill="currentColor">
+				<path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+			</svg>
+			<span>Settings</span>
+			</button>
 		</div>
 
-		<div id="post-body">
-			<div id="simple_ide_toolbar" class="quicktags-toolbar">
-			<div id="simple_ide_toolbar_tabs"> </div>
-			<div id="dialog_window_minimized_container"></div>
+		<div class="u-flex u-flex-row-reverse u-flex-grow u-min-h-0 u-divide-x u-divide-x-reverse u-divide-gray-300">
+
+			<!-- sidebar -->
+			<div class="u-bg-gray-100 u-flex u-flex-col u-flex-shrink-0 u-w-1/4 u-overflow-y-auto u-divide-y u-divide-gray-300">
+
+			<div id="simple_ide_info">
+				<div id="simple_ide_info_content" class="u-p-2"></div>
 			</div>
 
-			<div id="simple_ide_toolbar_buttons">
-			<div id="simple_ide_message"></div>
-			<a class="button restore" style="display:none;" title="Restore the active tab" href="#">Restore &#10012;</a>
+			<div id="simple_ide_color_assist" class="u-relative">
+				<div class="u-border-b u-border-gray-300 u-text-xs u-font-bold u-px-2 u-py-1 u-flex u-items-center">
+				<span class="u-uppercase">Color Assist</span>
+				<a href="" class="close-color-picker u-ml-auto u-no-underline">
+					<svg xmlns="http://www.w3.org/2000/svg" class="u-block u-h-4 u-w-4" viewBox="0 0 20 20" fill="currentColor">
+					<path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+					</svg>
+				</a>
+				</div>
+				<img src='<?php echo plugins_url( 'images/color-wheel.png', __FILE__ ); ?>' />
+				<input type="button" class="button" id="simple_ide_color_assist_send" value="&lt; Send to editor" />
+				<input type="text" id="simple_ide_color_assist_input" name="simple_ide_color_assist_input" value="" />
+			</div>
+
+			<div id="simple-ide-filetree" class="u-relative">
+				<div class="u-border-b u-border-gray-300 u-text-xs u-font-bold u-px-2 u-py-1 u-flex u-items-center">
+				<span class="u-uppercase">Files</span>
+				</div>
+				<div id="simple_ide_file_browser"></div>
+				<div class="new_file new_item_inputs">
+				<label for="new_folder">File name</label><input class="has_data" name="new_file" type="text" rel="" value="" placeholder="filename.ext" />
+				<a href="#" id="simple_ide_create_new_file" class="button-primary">CREATE</a>
+				</div>
+				<div class="new_directory new_item_inputs">
+				<label for="new_directory">Directory name</label><input class="has_data" name="new_directory" type="text" rel="" value="" placeholder="foldername" />
+				<a href="#" id="simple_ide_create_new_directory" class="button-primary">CREATE</a>
+				</div>
+			</div>
 
 			</div>
 
+			<div class="u-flex u-flex-col u-flex-grow u-min-w-0">
 
-			<div id='fancyeditordiv'></div>
+			<div id="simple_ide_toolbar" class="u-relative u-bg-gray-100 u-flex u-border-b u-border-gray-300">
+				<div id="simple_ide_toolbar_tabs" class="u-flex-1 u-flex u-overflow-x-auto"></div>
 
-			<form id="simple_ide_save_container" action="" method="get">
-			<div id="simple_ide_footer_message"></div>
-			<div id="simple_ide_footer_message_last_saved"></div>
-			<div id="simple_ide_footer_message_unsaved"></div>
+				<div id="simple_ide_toolbar_buttons" style="display: none;">
+				<div class="u-flex u-items-center u-justify-end">
+					<div id="simple_ide_message" class="u-mr-4"></div>
 
-			<a href="#" id="simple_ide_save" alt="Keyboard shortcut to save [Ctrl/Cmd + S]" title="Keyboard shortcut to save [Ctrl/Cmd + S]" class="button-primary">SAVE
-				FILE</a>
+					<div class="u-flex u-items-center u-p-1 u-gap-1">
+					<a class="button restore" style="display:none;" title="Restore the active tab" href="#">Restore</a>
 
-			<input type="hidden" id="filename" name="filename" value="" />
-			<?php
-			if ( function_exists( 'wp_nonce_field' ) ) {
-				wp_nonce_field( 'simple_ide_nonce' );
-			}
-			?>
-			</form>
+					<a href="#" id="simple_ide_save" title="Keyboard shortcut to save [Ctrl/Cmd + S]" class="button-primary u-flex u-items-center u-p-2">
+						<svg xmlns="http://www.w3.org/2000/svg" class="u-h-5 u-w-5 u-mr-2" viewBox="0 0 20 20" fill="currentColor">
+						<path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
+						</svg>
+						<span>Save</span>
+					</a>
+					</div>
+
+					<input type="hidden" id="filename" name="filename" value="" />
+					<?php
+					if ( function_exists( 'wp_nonce_field' ) ) {
+						wp_nonce_field( 'simple_ide_nonce' );
+					}
+					?>
+				</div>
+				</div>
+			</div>
+
+			<div id="fancyeditordiv"></div>
+
+			<div id="simple-ide-statusbar" class="u-flex u-items-center u-px-2 u-h-6 u-border-t u-border-gray-300 u-text-xs u-text-gray-600">
+				<span id="simple_ide_footer_message"></span>
+				<span id="simple_ide_footer_message_last_saved"></span>
+				<span id="simple_ide_footer_message_unsaved" class="u-text-red-700"></span>
+			</div>
+
+			</div>
 
 		</div>
 

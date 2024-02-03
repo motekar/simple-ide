@@ -14,11 +14,18 @@ var TokenIterator = require('ace/token_iterator').TokenIterator;
 
 var oHandler;
 
-var editor_options = { resizer: {} };
+var editor_options = {};
+
+var close_svg = `
+	<svg xmlns="http://www.w3.org/2000/svg" class="u-block u-h-4 u-w-4" viewBox="0 0 20 20" fill="currentColor">
+		<path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+	</svg>
+`;
 
 function onSessionChange(e) {
   //set the document as unsaved
   jQuery('.simple_ide_tab.active', '#simple_ide_toolbar').data('unsaved', true);
+  jQuery('.simple_ide_tab.active', '#simple_ide_toolbar').addClass('modified');
   jQuery('#simple_ide_footer_message_unsaved')
     .html('[ Document contains unsaved content &#9998; ]')
     .show();
@@ -165,10 +172,6 @@ function onSessionChange(e) {
   if (autocomplete_wordpress) {
     var tag;
     for (i in autocomplete_wordpress) {
-      //if(!html_tags.hasOwnProperty(i) ){
-      //	continue;
-      //}
-
       tag = i;
       //see if the tag is a match
       if (text !== tag.substr(0, text.length)) {
@@ -482,23 +485,24 @@ function simple_ide_set_file_contents(file, callback_func) {
     var the_path = file.replace(/^.*[\\\/]/, '').trim();
     var the_id = 'simple_ide_tab_' + last_added_editor_session;
 
+    jQuery('#simple_ide_toolbar_buttons').show();
+
     //enable editor now we have a file open
     jQuery('#fancyeditordiv textarea').removeAttr('disabled');
     editor.setReadOnly(false);
 
-    jQuery('#simple_ide_toolbar_tabs').append(
-      '<span id="' +
-        the_id +
-        '" sessionrel="' +
-        last_added_editor_session +
-        '"  title="  ' +
-        file +
-        ' " rel="' +
-        file +
-        '" class="simple_ide_tab">' +
-        the_path +
-        '<a class="close_tab" href="#">x</a></span>'
-    );
+    var tab = `
+			<div
+				id="${the_id}"
+				sessionrel="${last_added_editor_session}"
+				title="${file}"
+				rel="${file}"
+				class="simple_ide_tab u-inline-flex u-items-center u-px-2 u-min-h-[2rem] u-cursor-pointer u-border-r u-border-gray-300 u-whitespace-nowrap">
+				<span class="u-px-2">${the_path}</span>
+				<a class="close_tab" href="#">${close_svg}</a>
+			</div>
+		`;
+    jQuery('#simple_ide_toolbar_tabs').append(tab);
 
     saved_editor_sessions[last_added_editor_session] = new EditSession(
       response
@@ -648,6 +652,9 @@ function simple_ide_set_file_contents(file, callback_func) {
         //Clear the active editor if all tabs closed or activate first tab if required since the active tab may have been deleted
         if (jQuery('.simple_ide_tab').length == 0) {
           editor.getSession().setValue('');
+          jQuery('#simple_ide_toolbar_buttons').hide();
+          jQuery('#simple_ide_footer_message_last_saved').hide();
+          jQuery('#simple_ide_footer_message_unsaved').hide();
         } else if (activeFallback) {
           jQuery('#' + jQuery('.simple_ide_tab')[0].id).click();
         }
@@ -690,6 +697,7 @@ function saveDocument(ev) {
     filename: jQuery('input[name=filename]').val(),
     _wpnonce: jQuery('#_wpnonce').val(),
     _wp_http_referer: jQuery('#_wp_http_referer').val(),
+    // content need to be encoded to make sure its not blocked by WAF
     content: btoa(editor.getSession().getValue()),
   };
   jQuery.post(ajaxurl, data, function (response) {
@@ -760,13 +768,6 @@ function selectACitem(item) {
     simple_ide_close_autocomplete();
   } else {
     editor.insert('\n');
-  }
-}
-
-function update_scroll_bars_for_resizer() {
-  if (jQuery('.ace_scroller').css('overflowX') != 'scroll') {
-    var height = jQuery('.ace_sb').height();
-    jQuery('.ace_sb').height(height - 16);
   }
 }
 
@@ -1770,56 +1771,7 @@ jQuery(document).ready(function ($) {
     }
   );
 
-  // Add our resizer to the
-  $('#fancyeditordiv').prepend('<span id="resizer"></span>');
-
-  // Create resizer handle
-  $('#fancyeditordiv span#resizer').bind('mousedown', function (e) {
-    e = e || window.event;
-
-    var offset = e.offsetY;
-
-    if (offset === undefined) {
-      offset = 0;
-    }
-
-    window.editor_options.resizer.handler_offset = 15 - offset - 30;
-
-    function movement_handler(e) {
-      var line_height = editor.renderer.lineHeight;
-      var curr_height = $('#fancyeditordiv').height();
-
-      var o = jQuery('#simple_ide_toolbar_buttons').offset();
-
-      // Calculate new height.
-      var new_height = e.clientY; // Get mouse Y position in window.
-      new_height -= o.top; // Add offset from top of window.
-      new_height += window.editor_options.resizer.handler_offset; // Add offset from resizer handle.
-      new_height += jQuery(window).scrollTop(); // Add window scroll offset.
-      new_height = Math.round(new_height / line_height) * line_height; // Round to nearest line height
-
-      // Do not allow if less than 230px
-      if (new_height > 230 || new_height > curr_height) {
-        $('#fancyeditordiv').height(++new_height);
-        editor.resize();
-      }
-    }
-
-    function cancel_drag() {
-      $(window)
-        .unbind('mousemove', movement_handler)
-        .unbind('mouseup', cancel_drag);
-    }
-
-    // Detect movements on mouse
-    $(window).bind('mousemove', movement_handler);
-    $(window).bind('mouseup', cancel_drag);
-  });
-
-  $('#submitdiv h3')
-    .append('<a href="#" class="simple_ide-settings">')
-    .find('a')
-    .bind('click', display_editor_settings);
+  $('.simple-ide-settings').bind('click', display_editor_settings);
 
   $('#simple_ide_file_browser').on(
     'contextmenu',
@@ -1837,10 +1789,6 @@ jQuery(document).ready(function ($) {
 
     $('#fancyeditordiv').height(size + 'px');
   })();
-
-  editor.on('changeSession', function (e) {
-    update_scroll_bars_for_resizer();
-  });
 
   load_editor_settings();
   editor.resize();
